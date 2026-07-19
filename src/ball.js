@@ -1,15 +1,20 @@
-import { Graphics } from "pixi.js";
+import { Sprite, Assets } from "pixi.js";
 
-export class Ball extends Graphics {
-    constructor(x, y, ticker) {
+export class Ball extends Sprite {
+    constructor(x, y) {
         super();
-        this.radius = 10;
-        this.velocity = {x: 5, y: -5};
-        this.circle(0, 0, this.radius).fill('#ffffff');
+
+        this.texture = Assets.get("/assets/Ball.png");
+        this.texture.source.scaleMode = 'nearest';
+        this.anchor.set(0.5);
+
+        this.velocity = {x: 1, y: -1};
 
         this.setPosition(x, y);
+    }
 
-        ticker.add(() => this.updateInput());
+    initTicker(ticker) {
+        ticker.add(() => this.update());
     }
 
     setPosition(x, y) {
@@ -17,7 +22,7 @@ export class Ball extends Graphics {
         this.y = y;
     }
 
-    updateInput() {
+    update() {
         this.x += this.velocity.x;
         this.y += this.velocity.y;
     }

@@ -1,19 +1,23 @@
-import { Graphics, Point } from "pixi.js";
+import { Sprite, Point, Assets } from "pixi.js";
 import Input from "./Input.js";
 
-export class PlayerPlate extends Graphics {
-    constructor(width, height, windowSize, ticker) {
+export class PlayerPlate extends Sprite {
+    constructor(windowSizeX, windowSizeY) {
         super();
-        this.windowSize = windowSize;
-        this.widthPixels = width;
-        this.heightPixels = height;
+
+        this.texture = Assets.get("/assets/Plate1.png");
+        this.texture.source.scaleMode = 'nearest';
+        this.anchor.set(0.5, 0);
+
+        this.windowSizeX = windowSizeX;
+        this.windowSizeY = windowSizeY;
         this.speed = 2.0;
 
-        this.rect(-this.widthPixels / 2, 0, this.widthPixels, this.heightPixels).fill('#ffffff');
+        this.x = this.windowSizeX / 2;
+        this.y = this.windowSizeY - 16;
+    }
 
-        this.x = this.windowSize / 2;
-        this.y = this.windowSize - this.heightPixels;
-
+    initTicker(ticker) {
         ticker.add(() => this.updateInput());
     }
 
@@ -32,6 +36,6 @@ export class PlayerPlate extends Graphics {
 
     move(dir) {
         this.x += dir * this.speed;
-        this.x = Math.min(Math.max(this.widthPixels / 2, this.x), this.windowSize - this.widthPixels / 2);
+        this.x = Math.min(Math.max(this.width / 2, this.x), this.windowSizeX - this.width / 2);
     }
 }

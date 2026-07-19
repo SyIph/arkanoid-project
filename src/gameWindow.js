@@ -1,4 +1,5 @@
-import { Container, Graphics } from "pixi.js";
+import { Container, Graphics, Texture, Rectangle, Sprite, TilingSprite, Assets } from "pixi.js";
+import { LevelContainer } from "./levelContainer";
 
 export class GameWindow extends Container {
     constructor(app, innerSize) {
@@ -13,6 +14,17 @@ export class GameWindow extends Container {
 
         this.background = new Graphics().rect(0, 0, this.innerSize, this.innerSize).fill('#000000');
         this.addChild(this.background);
+
+        const size = this.innerSize * 0.7;
+        this.levelContainer = new LevelContainer(size, this.innerSize);
+        this.levelContainer.x = size * 0.055;
+        this.addChild(this.levelContainer);
+
+        this.initTicker(this.app.ticker);
+    }
+
+    initTicker(ticker) {
+        this.levelContainer.initTicker(ticker);
     }
 
     setMarginPercent(value) {
@@ -27,6 +39,6 @@ export class GameWindow extends Container {
         this.x = (window.innerWidth - size) / 2;
         this.y = (window.innerHeight - size) / 2;
 
-        this.scale.set(size / this.innerSize);
+        //this.scale.set(size / this.innerSize);
     }
 }

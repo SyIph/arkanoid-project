@@ -1,7 +1,5 @@
-import { Application, Point } from "pixi.js";
+import { Application, Point, Assets } from "pixi.js";
 import { GameWindow } from "./gameWindow";
-import { PlayerPlate } from "./playerPlate";
-import { Ball } from "./ball";
 
 (async () => {
   const app = new Application();
@@ -9,16 +7,16 @@ import { Ball } from "./ball";
   document.getElementById("pixi-container").appendChild(app.canvas);
 
   // Примитивнй прототип уровня: квадрат, плитка, шарик
-  const windowSize = 800;
+  const windowSize = 250;
+
+  await Assets.load([
+    "/assets/BorderTex.png",
+    "/assets/BorderElementTex.png",
+    "/assets/Plate1.png",
+    "/assets/Ball.png"
+  ]);
 
   const gameWindow = new GameWindow(app, windowSize).setMarginPercent(0.8);
   app.stage.addChild(gameWindow);
-
-  const playerPlate = new PlayerPlate(150, 20, windowSize, app.ticker);
-  gameWindow.addChild(playerPlate);
-
-  const ballStart = playerPlate.topCenter;
-  const ball = new Ball(ballStart.x + 10, ballStart.y - 10, app.ticker);
-  gameWindow.addChild(ball);
 
 })();

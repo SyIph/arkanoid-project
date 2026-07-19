@@ -1,44 +1,19 @@
-import { Application, Assets, Container, Sprite } from "pixi.js";
+import { Application, Assets, Container, Sprite, Graphics, autoDetectRenderer } from "pixi.js";
+import { GameWindow } from "./gameWindow";
+import { PlayerPlate } from "./playerPlate";
 
 (async () => {
-  // Create a new application
   const app = new Application();
-
-  // Initialize the application
   await app.init({ background: "#1099bb", resizeTo: window });
-
-  // Append the application canvas to the document body
   document.getElementById("pixi-container").appendChild(app.canvas);
 
-  // Create and add a container to the stage
-  const container = new Container();
+  // Примитивнй прототип уровня: квадрат, плитка, шарик
+  const windowSize = 800;
 
-  app.stage.addChild(container);
+  const gameWindow = new GameWindow(app, windowSize).setMarginPercent(0.8);
+  app.stage.addChild(gameWindow);
 
-  // Load the bunny texture
-  const texture = await Assets.load("/assets/bunny.png");
+  const playerPlate = new PlayerPlate(150, 20, windowSize);
+  gameWindow.addChild(playerPlate);
 
-  // Create a 5x5 grid of bunnies in the container
-  for (let i = 0; i < 25; i++) {
-    const bunny = new Sprite(texture);
-
-    bunny.x = (i % 5) * 40;
-    bunny.y = Math.floor(i / 5) * 40;
-    container.addChild(bunny);
-  }
-
-  // Move the container to the center
-  container.x = app.screen.width / 2;
-  container.y = app.screen.height / 2;
-
-  // Center the bunny sprites in local container coordinates
-  container.pivot.x = container.width / 2;
-  container.pivot.y = container.height / 2;
-
-  // Listen for animate update
-  app.ticker.add((time) => {
-    // Continuously rotate the container!
-    // * use delta to create frame-independent transform *
-    container.rotation -= 0.01 * time.deltaTime;
-  });
 })();

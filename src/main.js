@@ -1,6 +1,7 @@
-import { Application, Assets, Container, Sprite, Graphics, autoDetectRenderer } from "pixi.js";
+import { Application, Point } from "pixi.js";
 import { GameWindow } from "./gameWindow";
 import { PlayerPlate } from "./playerPlate";
+import { Ball } from "./ball";
 
 (async () => {
   const app = new Application();
@@ -15,5 +16,9 @@ import { PlayerPlate } from "./playerPlate";
 
   const playerPlate = new PlayerPlate(150, 20, windowSize, app.ticker);
   gameWindow.addChild(playerPlate);
+
+  const ballStart = playerPlate.topCenter;
+  const ball = new Ball(ballStart.x + 10, ballStart.y - 10, app.ticker);
+  gameWindow.addChild(ball);
 
 })();

@@ -1,4 +1,4 @@
-import { Graphics } from "pixi.js";
+import { Graphics, Point } from "pixi.js";
 import Input from "./Input.js";
 
 export class PlayerPlate extends Graphics {
@@ -9,10 +9,10 @@ export class PlayerPlate extends Graphics {
         this.heightPixels = height;
         this.speed = 2.0;
 
-        this.rect(-this.widthPixels / 2, this.heightPixels, this.widthPixels, this.heightPixels).fill('#ffffff');
+        this.rect(-this.widthPixels / 2, 0, this.widthPixels, this.heightPixels).fill('#ffffff');
 
-        this.x = (this.windowSize - this.widthPixels) / 2;
-        this.y = this.windowSize - this.heightPixels * 2;
+        this.x = this.windowSize / 2;
+        this.y = this.windowSize - this.heightPixels;
 
         ticker.add(() => this.updateInput());
     }
@@ -24,6 +24,10 @@ export class PlayerPlate extends Graphics {
         if (Input.right) {
             this.move(1);
         }
+    }
+
+    get topCenter() {
+        return new Point(this.x, this.y);
     }
 
     move(dir) {

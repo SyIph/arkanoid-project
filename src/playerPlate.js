@@ -34,6 +34,22 @@ export class PlayerPlate extends Sprite {
         return new Point(this.x, this.y);
     }
 
+    get left() {
+        return this.x - this.width / 2;
+    }
+
+    get right() {
+        return this.x + this.width / 2;
+    }
+
+    get top() {
+        return this.y - this.height / 2;
+    }
+
+    get bottom() {
+        return this.y + this.height / 2;
+    }
+
     move(dir) {
         this.x += dir * this.speed;
         this.x = Math.min(Math.max(this.width / 2, this.x), this.windowSizeX - this.width / 2);

@@ -13,17 +13,24 @@ export class Ball extends Sprite {
         this.setPosition(x, y);
     }
 
-    initTicker(ticker) {
-        ticker.add(() => this.update());
-    }
-
     setPosition(x, y) {
         this.x = x;
         this.y = y;
     }
 
-    update() {
-        this.x += this.velocity.x;
-        this.y += this.velocity.y;
+    get left() {
+        return this.x - this.width / 2;
+    }
+
+    get right() {
+        return this.x + this.width / 2;
+    }
+
+    get top() {
+        return this.y - this.height / 2;
+    }
+
+    get bottom() {
+        return this.y + this.height / 2;
     }
 }

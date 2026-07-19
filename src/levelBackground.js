@@ -91,7 +91,7 @@ export class LevelBackground extends Container {
 
     getInnerSpace() {
         const offsetX = 2 + this.verticalLeftBorder.width;
-        const offsetY = 2 + this.horizontalBorder.height;
+        const offsetY = 4 + this.horizontalBorder.height;
         return new Rectangle(offsetX, offsetY, this._width - offsetX * 2, this._height - offsetY)
     }
 }

@@ -13,7 +13,10 @@ import { GameWindow } from "./gameWindow";
     "/assets/BorderTex.png",
     "/assets/BorderElementTex.png",
     "/assets/Plate1.png",
-    "/assets/Ball.png"
+    "/assets/Ball.png",
+    "/assets/PlateBreak1.png",
+    "/assets/PlateBreak2.png",
+    "/assets/PlateBreak3.png"
   ]);
 
   const gameWindow = new GameWindow(app, windowSize).setMarginPercent(0.8);

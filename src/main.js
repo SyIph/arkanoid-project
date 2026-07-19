@@ -13,7 +13,7 @@ import { PlayerPlate } from "./playerPlate";
   const gameWindow = new GameWindow(app, windowSize).setMarginPercent(0.8);
   app.stage.addChild(gameWindow);
 
-  const playerPlate = new PlayerPlate(150, 20, windowSize);
+  const playerPlate = new PlayerPlate(150, 20, windowSize, app.ticker);
   gameWindow.addChild(playerPlate);
 
 })();

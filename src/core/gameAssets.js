@@ -7,7 +7,13 @@ export const AssetsIds = Object.freeze({
     BallTexture: "/assets/Ball.png",
     PlateBreak1Texture: "/assets/PlateBreak1.png",
     PlateBreak2Texture: "/assets/PlateBreak2.png",
-    PlateBreak3Texture: "/assets/PlateBreak3.png"
+    PlateBreak3Texture: "/assets/PlateBreak3.png",
+    ArmorBrick1Texture: "/assets/ArmorBrick1.png",
+    ArmorBrick2Texture: "/assets/ArmorBrick2.png",
+    ArmorBrick3Texture: "/assets/ArmorBrick3.png",
+    ArmorBrick4Texture: "/assets/ArmorBrick4.png",
+    ArmorBrick5Texture: "/assets/ArmorBrick5.png",
+    ArmorBrick6Texture: "/assets/ArmorBrick6.png"
 });
 
 export async function load() {

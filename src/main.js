@@ -8,7 +8,7 @@ import { GameWindow } from "./gameWindow";
   document.getElementById("pixi-container").appendChild(app.canvas);
 
   // Примитивнй прототип уровня: квадрат, плитка, шарик
-  const windowSize = 250;
+  const windowSize = 238;
 
   await GameAssets.load();
 

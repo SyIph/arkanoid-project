@@ -49,7 +49,6 @@ export class BallPhysics extends Container {
     }
 
     checkPlate() {
-
         const plateBounds = this.getBounds(this.plate);
 
         for (const ball of this.balls) {
@@ -79,6 +78,12 @@ export class BallPhysics extends Container {
         }
     }
 
+    checkBricks() {
+        for (const ball of this.balls) {
+            
+        }
+    }
+
     removeBall(ball) {
         const index = this.balls.indexOf(ball);
         if (index !== -1) {
@@ -104,7 +109,6 @@ export class BallPhysics extends Container {
     }
 
     getBounds(elem) {
-        // У Graphics нет anchor, потому выкручиваюсь...
         const anchorX = elem.anchor?.x ?? 0;
         const anchorY = elem.anchor?.y ?? 0;
 
@@ -118,6 +122,7 @@ export class BallPhysics extends Container {
         ticker.add(() => {
             this.checkWalls();
             this.checkPlate();
+            this.checkBricks();
         });
     }
 }

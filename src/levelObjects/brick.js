@@ -1,6 +1,7 @@
-import { Graphics } from "pixi.js";
+import { Container, Graphics, Assets, AnimatedSprite } from "pixi.js";
+import { AssetsIds } from "../core/gameAssets";
 
-export class Brick extends Graphics {
+export class Brick extends Container {
 
     constructor(width, height, color, score, armored = false, indestructable = false) {
         super();
@@ -11,17 +12,35 @@ export class Brick extends Graphics {
 
         this._width = width;
         this._height = height;
-        this.rect(0, 0, this._width, this._height).fill(this.color);
-        this.rect(0, this._height - 1, this._width, 1).fill("#000000");
-        this.rect(this._width - 1, 0, 1, this._height).fill("#000000");
-        if (this.armored) {
-            this.rect(1, this._height - 2, this._width - 1, 1).fill("#000000");
-            this.rect(this._width - 2, 1, 1, this._height - 1).fill("#000000");
-        }
+        
+        this.health = this.armored ? 2 : 1;
+
+        this.background = new Graphics();
+        this.background.rect(0, 0, this._width, this._height).fill(this.color);
+        this.background.rect(0, this._height - 1, this._width, 1).fill("#000000");
+        this.background.rect(this._width - 1, 0, 1, this._height).fill("#000000");
+        this.addChild(this.background);
+
+        this.armor = new AnimatedSprite([
+            Assets.get(AssetsIds.ArmorBrick1Texture),
+            Assets.get(AssetsIds.ArmorBrick2Texture),
+            Assets.get(AssetsIds.ArmorBrick3Texture),
+            Assets.get(AssetsIds.ArmorBrick4Texture),
+            Assets.get(AssetsIds.ArmorBrick5Texture),
+            Assets.get(AssetsIds.ArmorBrick6Texture),
+            Assets.get(AssetsIds.ArmorBrick1Texture)
+        ]);
+        this.armor.animationSpeed = 0.1;
+        this.armor.loop = false;
+        this.addChild(this.armor);
     }
 
-    hit(callback) {
-
+    hit() {
+        this.health--;
+        if (this.health <= 0) {
+            return;
+        }
+        this.armor.gotoAndPlay(0);
     }
 
     static GrayBrick(width, height, levelNum) {

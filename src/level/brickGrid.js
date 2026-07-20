@@ -14,8 +14,6 @@ export class BrickGrid extends Container {
 
         this.cellWidth = this._width / this.columns;
         this.cellHeight = this._height / this.rows;
-
-        console.log(this.cellWidth, this.cellHeight);
     }
 
     addBrick(brickFunc, x, y, levelNum = 1) {

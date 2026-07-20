@@ -1,5 +1,5 @@
 import { Container, Graphics, Texture, Rectangle, Sprite, TilingSprite, Assets } from "pixi.js";
-import { LevelBackground } from "./levelBackground";
+import { LevelBackground } from "../levelBg/levelBackground";
 import { PlayerPlate } from "../levelObjects/playerPlate";
 import { BallPhysics } from "../core/ballPhysics";
 

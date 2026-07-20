@@ -1,5 +1,5 @@
 import { Container, Graphics, Sprite, Assets } from "pixi.js";
-import { AssetsIds } from "./gameAssets";
+import { AssetsIds } from "../core/gameAssets";
 
 export class BorderElement extends Container {
     constructor() {

@@ -66,22 +66,6 @@ export class PlayerPlate extends AnimatedSprite {
         return new Point(this.x, this.y);
     }
 
-    get left() {
-        return this.x - this.width / 2;
-    }
-
-    get right() {
-        return this.x + this.width / 2;
-    }
-
-    get top() {
-        return this.y - this.height / 2;
-    }
-
-    get bottom() {
-        return this.y + this.height / 2;
-    }
-
     move(dir) {
         if (this.state == 'break')
             return;

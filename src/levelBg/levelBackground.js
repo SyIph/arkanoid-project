@@ -1,6 +1,6 @@
 import { Container, Graphics, Texture, Rectangle, Sprite, TilingSprite, Assets } from "pixi.js";
 import { BorderElement } from "./borderElement";
-import { AssetsIds } from "./gameAssets";
+import { AssetsIds } from "../core/gameAssets";
 
 export class LevelBackground extends Container {
     constructor(width, height) {

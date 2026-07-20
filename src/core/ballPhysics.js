@@ -21,22 +21,24 @@ export class BallPhysics extends Container {
             const halfWidth = ball.width / 2;
             const halfHeight = ball.height / 2;
 
-            if (ball.left <= 0 && ball.velocity.x < 0) {
+            const ballBounds = this.getBounds(ball);
+
+            if (ballBounds.left <= 0 && ball.velocity.x < 0) {
                 ball.x = halfWidth;
                 ball.velocity.x *= -1;
             }
 
-            if (ball.right >= innerWidth && ball.velocity.x > 0) {
+            if (ballBounds.right >= innerWidth && ball.velocity.x > 0) {
                 ball.x = innerWidth - halfWidth;
                 ball.velocity.x *= -1;
             }
 
-            if (ball.top <= 0 && ball.velocity.y < 0) {
+            if (ballBounds.top <= 0 && ball.velocity.y < 0) {
                 ball.y = halfHeight;
                 ball.velocity.y *= -1;
             }
 
-            if (ball.bottom >= innerHeight && ball.velocity.y > 0) {
+            if (ballBounds.bottom >= innerHeight && ball.velocity.y > 0) {
                 ballToRemove.push(ball);
             }
         }
@@ -47,22 +49,27 @@ export class BallPhysics extends Container {
     }
 
     checkPlate() {
+
+        const plateBounds = this.getBounds(this.plate);
+
         for (const ball of this.balls) {
             if (ball.velocity.y <= 0) {
                 continue;
             }
 
-            if (ball.bottom < this.plate.top) {
+            const ballBounds = this.getBounds(ball);
+
+            if (ballBounds.bottom < plateBounds.top) {
                 continue;
             }
 
-            if (ball.right < this.plate.left || ball.left > this.plate.right) {
+            if (ballBounds.right < plateBounds.left || ballBounds.left > plateBounds.right) {
                 continue;
             }
 
-            ball.y = this.plate.top - ball.height / 2;
+            ball.y = plateBounds.top - ball.height / 2;
 
-            ball.velocity.y = -Math.abs(ball.velocity.y)
+            ball.velocity.y = -Math.abs(ball.velocity.y);
 
             if (ball.x < this.plate.x) {
                 ball.velocity.x = -Math.abs(ball.velocity.x);
@@ -94,6 +101,17 @@ export class BallPhysics extends Container {
 
     addBrickToCheck(brick) {
 
+    }
+
+    getBounds(elem) {
+        // У Graphics нет anchor, потому выкручиваюсь...
+        const anchorX = elem.anchor?.x ?? 0;
+        const anchorY = elem.anchor?.y ?? 0;
+
+        const left = elem.x - elem.width * anchorX;
+        const top = elem.y - elem.height * anchorY;
+
+        return { left, right: left + elem.width, top, bottom: top + elem.height }
     }
 
     initTicker(ticker) {

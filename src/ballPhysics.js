@@ -80,7 +80,9 @@ export class BallPhysics extends Container {
         this.removeChild(ball);
         ball.destroy();
         if (this.balls.length == 0) {
-            console.log("Game over!")
+            this.plate.playBreak(function () {
+                console.log("Game over!");
+            })
         }
     }
 

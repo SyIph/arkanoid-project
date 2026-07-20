@@ -1,4 +1,4 @@
-import { Container, Graphics, Assets, AnimatedSprite } from "pixi.js";
+import { Container, Graphics, Assets, AnimatedSprite, Texture } from "pixi.js";
 import { AssetsIds } from "../core/gameAssets";
 
 export class Brick extends Container {
@@ -21,7 +21,7 @@ export class Brick extends Container {
         this.background.rect(this._width - 1, 0, 1, this._height).fill("#000000");
         this.addChild(this.background);
 
-        this.armor = new AnimatedSprite([
+        this.armor = new AnimatedSprite(this.armored ? [
             Assets.get(AssetsIds.ArmorBrick1Texture),
             Assets.get(AssetsIds.ArmorBrick2Texture),
             Assets.get(AssetsIds.ArmorBrick3Texture),
@@ -29,7 +29,7 @@ export class Brick extends Container {
             Assets.get(AssetsIds.ArmorBrick5Texture),
             Assets.get(AssetsIds.ArmorBrick6Texture),
             Assets.get(AssetsIds.ArmorBrick1Texture)
-        ]);
+        ] : [ Texture.EMPTY ]);
         this.armor.animationSpeed = 0.1;
         this.armor.loop = false;
         this.addChild(this.armor);
@@ -38,33 +38,34 @@ export class Brick extends Container {
     hit() {
         this.health--;
         if (this.health <= 0) {
-            return;
+            return true;
         }
         this.armor.gotoAndPlay(0);
+        return false;
     }
 
-    static GrayBrick(width, height, levelNum) {
-        return new Brick(width, height, '#b1b1b3', 50 * levelNum);
+    static GrayBrick(width, height, armored, levelNum) {
+        return new Brick(width, height, '#b1b1b3', 50 * levelNum, armored);
     }
 
-    static RedBrick(width, height, levelNum) {
-        return new Brick(width, height, '#710000', 90);
+    static RedBrick(width, height, armored, levelNum) {
+        return new Brick(width, height, '#710000', 90, armored);
     }
 
-    static BlueBrick(width, height, levelNum) {
-        return new Brick(width, height, '#002eb7', 100);
+    static BlueBrick(width, height, armored, levelNum) {
+        return new Brick(width, height, '#002eb7', 100, armored);
     }
 
-    static OrangeBrick(width, height, levelNum) {
-        return new Brick(width, height, '#d09a35', 60);
+    static OrangeBrick(width, height, armored, levelNum) {
+        return new Brick(width, height, '#d09a35', 60, armored);
     }
 
-    static PinkBrick(width, height, levelNum) {
-        return new Brick(width, height, '#d236c1', 110);
+    static PinkBrick(width, height, armored, levelNum) {
+        return new Brick(width, height, '#d236c1', 110, armored);
     }
 
-    static GreenBrick(width, height, levelNum) {
-        return new Brick(width, height, '#aaff52', 80);
+    static GreenBrick(width, height, armored, levelNum) {
+        return new Brick(width, height, '#aaff52', 80, armored);
     }
 
 }

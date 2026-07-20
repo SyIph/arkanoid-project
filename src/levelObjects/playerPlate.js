@@ -1,4 +1,4 @@
-import { AnimatedSprite, Point, Assets } from "pixi.js";
+import { AnimatedSprite, Point, Assets, Texture } from "pixi.js";
 import Input from "../core/input.js";
 import { AssetsIds } from "../core/gameAssets.js";
 
@@ -12,11 +12,11 @@ export class PlayerPlate extends AnimatedSprite {
                 baseTexture
             ],
             'break': [
-                Assets.get(AssetsIds.PlateBreak1Texture),
+                Assets.get(AssetsIds.PlateTexture),
                 Assets.get(AssetsIds.PlateBreak1Texture),
                 Assets.get(AssetsIds.PlateBreak2Texture),
                 Assets.get(AssetsIds.PlateBreak3Texture),
-                Assets.get(AssetsIds.PlateBreak3Texture)
+                Texture.EMPTY
             ]
         }
 

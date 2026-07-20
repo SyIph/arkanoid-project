@@ -18,13 +18,12 @@ export class LevelContainer extends Container {
         const space = this.levelBackground.getInnerSpace();
 
         this.playerPlate = new PlayerPlate(space.width, space.height);
+        this.brickGrid = new BrickGrid(space.width, space.height, 28, 11);
 
-        this.innerSpace = new BallPhysics(this.playerPlate);
+        this.innerSpace = new BallPhysics(this.playerPlate, this.brickGrid);
         this.innerSpace.x = space.x;
         this.innerSpace.y = space.y;
         const background = new Graphics().rect(0, 0, space.width, space.height).fill('#000000');
-
-        this.brickGrid = new BrickGrid(space.width, space.height, 28, 11);
 
         this.innerSpace.addChild(background);
         this.innerSpace.addChild(this.playerPlate);
@@ -37,7 +36,24 @@ export class LevelContainer extends Container {
     }
 
     testLevelData() {
-        this.brickGrid.addBrickRow(Brick.GrayBrick, 4);
+        this.addBrickRow(Brick.GrayBrick, 4, true);
+        this.addBrickRow(Brick.RedBrick, 5);
+        this.addBrickRow(Brick.BlueBrick, 6);
+        this.addBrickRow(Brick.OrangeBrick, 7);
+        this.addBrickRow(Brick.PinkBrick, 8);
+        this.addBrickRow(Brick.GreenBrick, 9);
+    }
+
+    addBrick(brickFunc, x, y, armored = false, levelNum = 1) {
+        this.brickGrid.addBrick(brickFunc, x, y, armored, levelNum);
+    }
+
+    addBrickRow(brickFunc, y, armored = false, levelNum = 1) {
+        this.brickGrid.addBrickRow(brickFunc, y, armored, levelNum);
+    }
+
+    addBrickColumn(brickFunc, x, armored = false, levelNum = 1) {
+        this.brickGrid.addBrickColumn(brickFunc, x, armored, levelNum);
     }
 
     addBall() {

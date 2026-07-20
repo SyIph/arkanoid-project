@@ -1,11 +1,11 @@
-import { Container, Graphics, Sprite, Assets, SCALE_MODES } from "pixi.js";
+import { Container, Graphics, Sprite, Assets } from "pixi.js";
+import { AssetsIds } from "./gameAssets";
 
 export class BorderElement extends Container {
     constructor() {
         super();
 
-        const texture = Assets.get("/assets/BorderElementTex.png");
-        texture.source.scaleMode = 'nearest';
+        const texture = Assets.get(AssetsIds.BorderElementTexture);
 
         this.elementSprite = new Sprite(texture);
         this.elementSprite.x = 1 + this.elementSprite.width / 2;

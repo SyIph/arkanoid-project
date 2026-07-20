@@ -1,21 +1,22 @@
 import { AnimatedSprite, Point, Assets } from "pixi.js";
 import Input from "./Input.js";
+import { AssetsIds } from "./gameAssets";
 
 export class PlayerPlate extends AnimatedSprite {
 
     constructor(windowSizeX, windowSizeY) {
-        const baseTexture = Assets.get("/assets/Plate1.png");
+        const baseTexture = Assets.get(AssetsIds.PlateTexture);
         super([baseTexture]);
         this.allStates = {
             'base': [
                 baseTexture
             ],
             'break': [
-                Assets.get("/assets/PlateBreak1.png"),
-                Assets.get("/assets/PlateBreak1.png"),
-                Assets.get("/assets/PlateBreak2.png"),
-                Assets.get("/assets/PlateBreak3.png"),
-                Assets.get("/assets/PlateBreak3.png")
+                Assets.get(AssetsIds.PlateBreak1Texture),
+                Assets.get(AssetsIds.PlateBreak1Texture),
+                Assets.get(AssetsIds.PlateBreak2Texture),
+                Assets.get(AssetsIds.PlateBreak3Texture),
+                Assets.get(AssetsIds.PlateBreak3Texture)
             ]
         }
 
@@ -46,9 +47,6 @@ export class PlayerPlate extends AnimatedSprite {
     setState(state) {
         this.state = state;
         this.textures = this.allStates[state];
-        this.textures.forEach(texture => {
-            texture.source.scaleMode = "nearest";
-        });
     }
 
     initTicker(ticker) {

@@ -1,5 +1,6 @@
-import { Container, Graphics, Texture, Rectangle, Sprite, TilingSprite, Assets, SCALE_MODES } from "pixi.js";
+import { Container, Graphics, Texture, Rectangle, Sprite, TilingSprite, Assets } from "pixi.js";
 import { BorderElement } from "./borderElement";
+import { AssetsIds } from "./gameAssets";
 
 export class LevelBackground extends Container {
     constructor(width, height) {
@@ -8,8 +9,7 @@ export class LevelBackground extends Container {
         this._width = width;
         this._height = height;
 
-        const atlas = Assets.get("/assets/BorderTex.png");
-        atlas.source.scaleMode = 'nearest';
+        const atlas = Assets.get(AssetsIds.BorderTexture);
 
         const borderTopLeftTexture = new Texture({
             source: atlas.source,

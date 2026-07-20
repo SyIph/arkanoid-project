@@ -1,4 +1,5 @@
-import { Application, Point, Assets } from "pixi.js";
+import { Application, Point } from "pixi.js";
+import * as GameAssets from "./gameAssets";
 import { GameWindow } from "./gameWindow";
 
 (async () => {
@@ -9,15 +10,7 @@ import { GameWindow } from "./gameWindow";
   // Примитивнй прототип уровня: квадрат, плитка, шарик
   const windowSize = 250;
 
-  await Assets.load([
-    "/assets/BorderTex.png",
-    "/assets/BorderElementTex.png",
-    "/assets/Plate1.png",
-    "/assets/Ball.png",
-    "/assets/PlateBreak1.png",
-    "/assets/PlateBreak2.png",
-    "/assets/PlateBreak3.png"
-  ]);
+  await GameAssets.load();
 
   const gameWindow = new GameWindow(app, windowSize).setMarginPercent(0.8);
   app.stage.addChild(gameWindow);

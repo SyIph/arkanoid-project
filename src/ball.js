@@ -1,10 +1,11 @@
 import { Sprite, Assets } from "pixi.js";
+import { AssetsIds } from "./gameAssets";
 
 export class Ball extends Sprite {
     constructor(x, y) {
         super();
 
-        this.texture = Assets.get("/assets/Ball.png");
+        this.texture = Assets.get(AssetsIds.BallTexture);
         this.texture.source.scaleMode = 'nearest';
         this.anchor.set(0.5);
 

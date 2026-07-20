@@ -1,5 +1,5 @@
 import { Application, Point } from "pixi.js";
-import * as GameAssets from "./gameAssets";
+import * as GameAssets from "./core/gameAssets";
 import { GameWindow } from "./gameWindow";
 
 (async () => {

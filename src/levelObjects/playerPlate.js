@@ -1,6 +1,6 @@
 import { AnimatedSprite, Point, Assets } from "pixi.js";
-import Input from "./Input.js";
-import { AssetsIds } from "./gameAssets";
+import Input from "../core/input.js";
+import { AssetsIds } from "../core/gameAssets.js";
 
 export class PlayerPlate extends AnimatedSprite {
 

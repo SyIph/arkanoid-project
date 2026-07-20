@@ -1,5 +1,5 @@
 import { Container, Graphics, Texture, Rectangle, Sprite, TilingSprite, Assets } from "pixi.js";
-import { LevelContainer } from "./levelContainer";
+import { LevelContainer } from "./level/levelContainer";
 
 export class GameWindow extends Container {
     constructor(app, innerSize) {

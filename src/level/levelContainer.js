@@ -1,7 +1,7 @@
 import { Container, Graphics, Texture, Rectangle, Sprite, TilingSprite, Assets } from "pixi.js";
 import { LevelBackground } from "./levelBackground";
-import { PlayerPlate } from "./playerPlate";
-import { BallPhysics } from "./ballPhysics";
+import { PlayerPlate } from "../levelObjects/playerPlate";
+import { BallPhysics } from "../core/ballPhysics";
 
 export class LevelContainer extends Container {
     constructor(width, height) {

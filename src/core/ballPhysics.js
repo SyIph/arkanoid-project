@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { Ball } from "./ball";
+import { Ball } from "../levelObjects/ball";
 
 export class BallPhysics extends Container {
     constructor(plate) {

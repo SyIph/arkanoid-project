@@ -1,5 +1,5 @@
 import { Sprite, Assets } from "pixi.js";
-import { AssetsIds } from "./gameAssets";
+import { AssetsIds } from "../core/gameAssets";
 
 export class Ball extends Sprite {
     constructor(x, y) {

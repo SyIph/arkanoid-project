@@ -1,14 +1,16 @@
-import { Container } from "pixi.js";
+import { Container, Graphics } from "pixi.js";
 import { Ball } from "../levelObjects/ball";
 
 export class BallPhysics extends Container {
-    constructor(plate, brickGrid) {
+    constructor(width, height, plate, brickGrid) {
         super();
         this.plate = plate;
         this.brickGrid = brickGrid;
         this.balls = [];
         this.bricks = [];
         this.ballToRemove = [];
+        const bounds = new Graphics().rect(0, 0, width, height).fill({ color: "#ffffff", alpha: 0 });
+        this.addChild(bounds);
     }
 
     checkWalls(ball, newBallX, newBallY) {
@@ -127,9 +129,7 @@ export class BallPhysics extends Container {
         this.removeChild(ball);
         ball.destroy();
         if (this.balls.length == 0) {
-            this.plate.playBreak(function () {
-                console.log("Game over!");
-            })
+            this.plate.playBreak();
         }
     }
 

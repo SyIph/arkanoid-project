@@ -1,10 +1,11 @@
-import { Container, Graphics, Texture, Rectangle, Sprite, TilingSprite, Assets } from "pixi.js";
+import { Container, Graphics, Texture, Rectangle, Sprite, TilingSprite, Assets, TextStyle, Text } from "pixi.js";
 import { LevelBackground } from "../levelBg/levelBackground";
 import { PlayerPlate } from "../levelObjects/playerPlate";
 import { BallPhysics } from "../core/ballPhysics";
 import { Brick } from "../levelObjects/brick";
 import { BrickGrid } from "./brickGrid";
 import { ScoreBoard } from "./scoreBoard";
+import { LifeBoard } from "./lifeBorard";
 
 export class LevelContainer extends Container {
     constructor(width, height, backgroundTexture, levelNum = 1) {
@@ -22,30 +23,57 @@ export class LevelContainer extends Container {
         const space = this.levelBackground.getInnerSpace();
 
         this.playerPlate = new PlayerPlate(space.width, space.height);
-        this.brickGrid = new BrickGrid(space.width, space.height, 28, 11);
 
-        this.innerSpace = new BallPhysics(this.playerPlate, this.brickGrid);
+        this.scoreBoard = new ScoreBoard();
+        this.scoreBoard.x = this.levelBackground.width;
+        this.scoreBoard.y = 16;
+        this.scoreBoard.init();
+        this.addChild(this.scoreBoard);
+
+        this.brickGrid = new BrickGrid(space.width, space.height, 28, 11);
+        this.brickGrid.setScoreCallback((score) => {
+            this.scoreBoard.score += score;
+        });
+
+        this.innerSpace = new BallPhysics(space.width, space.height, this.playerPlate, this.brickGrid);
         this.innerSpace.x = space.x;
         this.innerSpace.y = space.y;
-
-        const gameField = new TilingSprite({
-            texture: Assets.get(this.backgroundTexture),
-            width: space.width,
-            height: space.height
-        });
-        this.innerSpace.addChild(gameField);
 
         this.innerSpace.addChild(this.playerPlate);
         this.innerSpace.addChild(this.brickGrid);
         this.addChild(this.innerSpace);
 
-        this.scoreBoard = new ScoreBoard();
-        this.scoreBoard.x = this.levelBackground.width;
-        this.scoreBoard.y = 16;
-        this.scoreBoard.updatePos();
-        this.addChild(this.scoreBoard);
+        const textStyle = new TextStyle({
+            fill: '#ffffff',
+            fontFamily: "Arial",
+            fontSize: 16,
+            fontWeight: "bold"
+        });
+
+        this.infoTitle = new Text({
+            text: "",
+            style: textStyle
+        });
+        this.infoTitle.anchor.set(0.5);
+        this.infoTitle.x = space.x + space.width / 2;
+        this.infoTitle.y = space.height * 0.84;
+        this.addChild(this.infoTitle);
 
         this.addBall();
+
+        this.lifeBoard = new LifeBoard(4, 4);
+        this.lifeBoard.x = this.levelBackground.width + 1;
+        this.lifeBoard.y = (this.height - this.lifeBoard.height) / 2;
+        this.lifeBoard.lifeCount = 6;
+        this.addChild(this.lifeBoard);
+
+        this.playerPlate.setBreakCallback(() => {
+            if (this.lifeBoard.lifeCount > 0) {
+                
+            } else {
+                this.setInfoTitle('GAME OVER');
+            }
+        });
 
         this.testLevelData();
     }
@@ -80,4 +108,9 @@ export class LevelContainer extends Container {
         this.playerPlate.initTicker(ticker);
         this.innerSpace.initTicker(ticker);
     }
+
+    setInfoTitle(text) {
+        this.infoTitle.text = text;
+    }
+
 }

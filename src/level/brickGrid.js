@@ -18,9 +18,15 @@ export class BrickGrid extends Container {
         this.cellHeight = this._height / this.rows;
     }
 
+    setScoreCallback(scoreCallback) {
+        this.scoreCallback = scoreCallback;
+    }
+
     hitBrick(brick) {
         if (brick.hit()) {
             this.removeBrick(brick);
+            if (this.scoreCallback) 
+                this.scoreCallback(brick.score);
         }
     }
 

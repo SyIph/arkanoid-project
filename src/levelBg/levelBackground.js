@@ -70,6 +70,16 @@ export class LevelBackground extends Container {
         this.borderHorizontalElement2 = new BorderElement();
         this.borderHorizontalElement2.x = this._width / 4 * 3 - this.borderHorizontalElement2.width / 2;
 
+        const space = this.getInnerSpace();
+        const background = new TilingSprite({
+            texture: Assets.get(this.backgroundTexture),
+            width: space.width,
+            height: space.height
+        });
+        background.x = space.x;
+        background.y = space.y - 1;
+        this.addChild(background);
+
         this.addChild(this.topLeftBorder);
         this.addChild(this.topRightBorder);
         this.addChild(this.horizontalBorder);

@@ -34,13 +34,14 @@ export class PlayerPlate extends AnimatedSprite {
         this.y = this.windowSizeY - 16;
     }
 
-    playBreak(callback) {
+    playBreak() {
         this.setState('break');
         this.animationSpeed = 0.1;
         this.anchor.set(0.5);
         this.play();
         this.onComplete = () => {
-            callback();
+            if (this.breakCallback)
+                this.breakCallback();
         };
     }
 
@@ -71,5 +72,9 @@ export class PlayerPlate extends AnimatedSprite {
             return;
         this.x += dir * this.speed;
         this.x = Math.min(Math.max(this.width / 2, this.x), this.windowSizeX - this.width / 2);
+    }
+
+    setBreakCallback(breakCallback) {
+        this.breakCallback = breakCallback;
     }
 }

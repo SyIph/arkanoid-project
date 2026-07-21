@@ -16,9 +16,9 @@ export class GameWindow extends Container {
         this.background = new Graphics().rect(0, 0, this.innerSize, this.innerSize).fill('#000000');
         this.addChild(this.background);
 
-        const size = Math.round(this.innerSize * 0.825);
+        const sizeWidth = Math.round(this.innerSize * 0.825);
 
-        this.levelContainer = new LevelContainer(size, this.innerSize, AssetsIds.Level1BgTexture, 1);
+        this.levelContainer = new LevelContainer(sizeWidth, this.innerSize, AssetsIds.Level1BgTexture, 1);
         this.levelContainer.x = 2;
         this.addChild(this.levelContainer);
 

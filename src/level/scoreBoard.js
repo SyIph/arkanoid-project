@@ -28,7 +28,7 @@ export class ScoreBoard extends Container {
             text: "",
             style: valueStyle
         });
-        this.highValue.anchor.set(1, 0);
+        this.highValue.anchor.set(0.5, 0);
         this.highValue.y = this.highTitle.y + this.highTitle.height - 4;
         this.addChild(this.highValue);
 
@@ -43,7 +43,7 @@ export class ScoreBoard extends Container {
             text: "",
             style: valueStyle
         });
-        this.playerValue.anchor.set(1, 0);
+        this.playerValue.anchor.set(0.5, 0);
         this.playerValue.y = this.playerTitle.y + this.playerTitle.height - 4;
         this.addChild(this.playerValue);
 
@@ -58,7 +58,10 @@ export class ScoreBoard extends Container {
 
     set score(value) {
         this._score = value;
-        this.playerValue.text = '   ' + value.toString();
+        this.playerValue.text = value.toString();
+        if (value > this.highScore) {
+            this.highScore = value;
+        }
     }
 
     get highScore() {
@@ -67,10 +70,10 @@ export class ScoreBoard extends Container {
 
     set highScore(value) {
         this._highScore = value;
-        this.highValue.text = '   ' + value.toString();
+        this.highValue.text = value.toString();
     }
 
-    updatePos() {
+    init() {
         this.highValue.x = this.width / 2;
         this.playerValue.x = this.width / 2;
     }

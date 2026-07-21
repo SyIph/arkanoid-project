@@ -15,6 +15,8 @@ export class Ball extends Sprite {
     }
 
     setPosition(x, y) {
+        this.prevX = this.x;
+        this.prevY = this.y;
         this.x = x;
         this.y = y;
     }

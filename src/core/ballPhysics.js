@@ -11,30 +11,27 @@ export class BallPhysics extends Container {
         this.ballToRemove = [];
     }
 
-    checkWalls(ball) {
+    checkWalls(ball, newBallX, newBallY) {
         const innerWidth = this.width;
         const innerHeight = this.height;
-
-        ball.x += ball.velocity.x;
-        ball.y += ball.velocity.y;
 
         const halfWidth = ball.width / 2;
         const halfHeight = ball.height / 2;
 
-        const ballBounds = this.getBounds(ball);
+        const ballBounds = this.getBoundsAt(ball, newBallX, newBallY);
 
         if (ballBounds.left <= 0 && ball.velocity.x < 0) {
-            ball.x = halfWidth;
+            newBallX = halfWidth;
             ball.velocity.x *= -1;
         }
 
         if (ballBounds.right >= innerWidth && ball.velocity.x > 0) {
-            ball.x = innerWidth - halfWidth;
+            newBallX = innerWidth - halfWidth;
             ball.velocity.x *= -1;
         }
 
         if (ballBounds.top <= 0 && ball.velocity.y < 0) {
-            ball.y = halfHeight;
+            newBallY = halfHeight;
             ball.velocity.y *= -1;
         }
 
@@ -43,7 +40,7 @@ export class BallPhysics extends Container {
         }
     }
 
-    checkPlate(ball) {
+    checkPlate(ball, newBallX, newBallY) {
         const plateBounds = this.getBounds(this.plate);
 
         if (ball.velocity.y <= 0) {
@@ -71,42 +68,55 @@ export class BallPhysics extends Container {
         }
     }
 
-    checkBricks(ball) {
+    checkBricks(ball, newBallX, newBallY) {
+        const ballBounds = this.getBounds(ball);
+
+        const bricks = this.brickGrid.getBricksNear(ballBounds);
+
         for (const brick of this.brickGrid.bricks) {
             const brickBounds = this.getBounds(brick);
-            const ballBounds = this.getBounds(ball);
 
             if (ballBounds.right < brickBounds.left || ballBounds.left > brickBounds.right ||
                 ballBounds.top > brickBounds.bottom || ballBounds.bottom < brickBounds.top) {
                 continue;
             }
 
-            const collisionLeft = ballBounds.right - brickBounds.left;
-            const collisionRight = brickBounds.right - ballBounds.left;
+            const NO_COLLISION = Infinity;
+
+            const ballFromLeft = ball.velocity.x > 0;
+            const ballFromRight = ball.velocity.x < 0;
+            const collisionLeft = ballFromLeft ? ballBounds.right - brickBounds.left : NO_COLLISION;
+            const collisionRight = ballFromRight ? brickBounds.right - ballBounds.left : NO_COLLISION;
             const collisionHorizontal = Math.min(collisionLeft, collisionRight);// Какая меньше, к той стороне ближе
 
-            const collisionTop = ballBounds.bottom - brickBounds.top;
-            const collisionBottom = brickBounds.bottom - ballBounds.top;
+            const ballFromTop = ball.velocity.y > 0;
+            const ballFromBottom = ball.velocity.y < 0;
+            const collisionTop = ballFromTop ? ballBounds.bottom - brickBounds.top : NO_COLLISION;
+            const collisionBottom = ballFromBottom ? brickBounds.bottom - ballBounds.top : NO_COLLISION;
             const collisionVertical = Math.min(collisionTop, collisionBottom);// Какая меньше, к той стороне ближе
 
             if (collisionHorizontal < collisionVertical) {// Столкновение произошло по горизонтали
                 if (ball.velocity.x > 0) {
-                    ball.x -= collisionHorizontal;
+                    newBallX = ball.x - collisionHorizontal;
                 } else {
-                    ball.x += collisionHorizontal;
+                    newBallX = ball.x + collisionHorizontal;
                 }
                 ball.velocity.x *= -1;
             } else { // Столкновение произошло по вертикали
                 if (ball.velocity.y > 0) {
-                    ball.y -= collisionVertical;
+                    newBallY = ball.y - collisionVertical;
                 } else {
-                    ball.y += collisionVertical;
+                    newBallY = ball.y + collisionVertical;
                 }
                 ball.velocity.y *= -1;
             }
 
             this.brickGrid.hitBrick(brick);
+
+            return true;
         }
+
+        return false;
     }
 
     removeBall(ball) {
@@ -134,11 +144,15 @@ export class BallPhysics extends Container {
     }
 
     getBounds(elem) {
+        return this.getBoundsAt(elem, elem.x, elem.y);
+    }
+
+    getBoundsAt(elem, x, y) {
         const anchorX = elem.anchor?.x ?? 0;
         const anchorY = elem.anchor?.y ?? 0;
 
-        const left = elem.x - elem.width * anchorX;
-        const top = elem.y - elem.height * anchorY;
+        const left = x - elem.width * anchorX;
+        const top = y - elem.height * anchorY;
 
         return { left, right: left + elem.width, top, bottom: top + elem.height }
     }
@@ -146,15 +160,21 @@ export class BallPhysics extends Container {
     initTicker(ticker) {
         ticker.add(() => {
             for (const ball of this.balls) {
-                this.checkWalls(ball);
-                this.checkPlate(ball);
-                this.checkBricks(ball);
+                const newBallX = ball.x + ball.velocity.x;
+                const newBallY = ball.y + ball.velocity.y;
+
+                this.checkWalls(ball, newBallX, newBallY);
+                this.checkPlate(ball, newBallX, newBallY);
+                if (this.checkBricks(ball, newBallX, newBallY)) {
+                    break;
+                }
+
+                ball.setPosition(newBallX, newBallY);
             }
             for (const ball of this.ballToRemove) {
                 this.removeBall(ball);
             }
             this.ballToRemove.length = 0;
-            console.log(this.ballToRemove.length);
         });
     }
 }

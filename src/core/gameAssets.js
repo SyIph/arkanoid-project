@@ -1,4 +1,4 @@
-import { Assets } from "pixi.js";
+import { Assets, TextStyle } from "pixi.js";
 
 export const AssetsIds = Object.freeze({
     BorderTexture: "/assets/BorderTex.png",
@@ -16,6 +16,27 @@ export const AssetsIds = Object.freeze({
     ArmorBrick6Texture: "/assets/ArmorBrick6.png",
     Level1BgTexture: "/assets/LevelBg1.png",
     LifeTexture: "/assets/Life.png"
+});
+
+export const TextStyles = Object.freeze({
+    ScoreTitle: new TextStyle({
+            fill: '#990000',
+            fontFamily: "Arial",
+            fontSize: 8,
+            fontWeight: "bold"
+        }),
+    ScoreValue: new TextStyle({
+            fill: '#ffffff',
+            fontFamily: "Arial",
+            fontSize: 10,
+            fontWeight: "bold"
+        }),
+    LargeInfo: new TextStyle({
+            fill: '#ffffff',
+            fontFamily: "Arial",
+            fontSize: 16,
+            fontWeight: "bold"
+        })
 });
 
 export async function load() {

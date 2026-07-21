@@ -1,15 +1,15 @@
 import { Container, Graphics, Texture, Rectangle, Sprite, TilingSprite, Assets, TextStyle, Text } from "pixi.js";
-import { LevelBackground } from "../levelBg/levelBackground";
-import { PlayerPlate } from "../levelObjects/playerPlate";
-import { BallPhysics } from "../core/ballPhysics";
-import { Brick } from "../levelObjects/brick";
-import { BrickGrid } from "./brickGrid";
-import { ScoreBoard } from "./scoreBoard";
-import { LifeBoard } from "./lifeBoard";
-import { AssetsIds } from "../core/gameAssets";
-import { SaveManager } from "../core/saveManger";
+import { LevelBackground } from "../levelBg/levelBackground.js";
+import { PlayerPlate } from "../levelObjects/playerPlate.js";
+import { BallPhysics } from "../core/ballPhysics.js";
+import { Brick } from "../levelObjects/brick.js";
+import { BrickGrid } from "./brickGrid.js";
+import { ScoreBoard } from "./scoreBoard.js";
+import { LifeBoard } from "./lifeBoard.js";
+import { AssetsIds, TextStyles } from "../core/gameAssets.js";
+import { SaveManager } from "../core/saveManger.js";
 import Input from "../core/input.js";
-import { GameState } from "../level/gameState.js";
+import { GameState } from "./gameState.js";
 
 export class LevelContainer extends Container {
     constructor(width, height, gameInfo) {
@@ -30,19 +30,21 @@ export class LevelContainer extends Container {
         this.scoreBoard.x = this.levelBackground.width;
         this.scoreBoard.y = 16;
         this.scoreBoard.init();
-        this.scoreBoard.highScore = SaveManager.loadHighScore();
+        this.scoreBoard.highScore = this.gameInfo.highScore;
+        this.scoreBoard.score = this.gameInfo.score;
         this.addChild(this.scoreBoard);
 
         this.brickGrid = new BrickGrid(space.width, space.height, 28, 11);
         this.brickGrid.setScoreCallback((score) => {
-            this.scoreBoard.score += score;
+            this.gameInfo.score += score;
+            this.scoreBoard.score = this.gameInfo.score;
             if (this.scoreBoard.score > this.scoreBoard.highScore) {
-                this.scoreBoard.highScore = this.scoreBoard.score;
+                this.gameInfo.highScore = this.scoreBoard.highScore = this.scoreBoard.score;
                 SaveManager.saveHighScore(this.scoreBoard.score);
             }
         });
 
-        this.innerSpace = new BallPhysics(space.width, space.height, this.playerPlate, this.brickGrid);
+        this.innerSpace = new BallPhysics(space.width, space.height, this.playerPlate, this.brickGrid, this.gameInfo);
         this.innerSpace.x = space.x;
         this.innerSpace.y = space.y;
 
@@ -50,16 +52,9 @@ export class LevelContainer extends Container {
         this.innerSpace.addChild(this.brickGrid);
         this.addChild(this.innerSpace);
 
-        const textStyle = new TextStyle({
-            fill: '#ffffff',
-            fontFamily: "Arial",
-            fontSize: 16,
-            fontWeight: "bold"
-        });
-
         this.infoTitle = new Text({
             text: "",
-            style: textStyle
+            style: TextStyles.LargeInfo
         });
         this.infoTitle.anchor.set(0.5);
         this.infoTitle.x = space.x + space.width / 2;
@@ -75,9 +70,10 @@ export class LevelContainer extends Container {
         this.playerPlate.setBreakCallback(() => {
             if (this.lifeBoard.lifeCount > 0) {
                 this.lifeBoard.lifeCount--;
-                this.startWaiting();
+                this.gameInfo.state = GameState.LOADING_ROUND;
             } else if (this.brickGrid.bricks.length == 0) {
                 if (this.initLevel(this.currentLevel + 1)) {
+                    this.gameInfo.round = this.currentLevel + 1;
                     this.setInfoTitle('YOU WIN');
                 }
             } else {
@@ -85,7 +81,10 @@ export class LevelContainer extends Container {
             }
         });
 
+        this.hide();
+
         this.initLevel(1);
+
     }
 
     initLevel(levelNum) {
@@ -103,7 +102,6 @@ export class LevelContainer extends Container {
         } else {
             return true;
         }
-        this.startWaiting();
         return false;
     }
 
@@ -139,15 +137,19 @@ export class LevelContainer extends Container {
         this.innerSpace.createBall(ballStart, sticked);
     }
 
-    startWaiting() {
-        this.setInfoTitle('PLAYER 1\n  READY');
-        this.gameInfo.state = GameState.WAITING_PLAYER;
-    }
-
     startPlay() {
         this.setInfoTitle('');
         this.gameInfo.state = GameState.PLAYING;
         this.resetPlateAndBall();
+    }
+
+    show() {
+        this.visible = true;
+        this.setInfoTitle('PLAYER 1\n  READY');
+    }
+
+    hide() {
+        this.visible = false;
     }
 
     initTicker(ticker) {
@@ -156,7 +158,6 @@ export class LevelContainer extends Container {
                 this.startPlay();
             }
         });
-        this.playerPlate.initTicker(ticker);
         this.innerSpace.initTicker(ticker);
     }
 

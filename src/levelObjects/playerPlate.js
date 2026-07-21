@@ -55,19 +55,6 @@ export class PlayerPlate extends AnimatedSprite {
         this.textures = this.allStates[state];
     }
 
-    initTicker(ticker) {
-        ticker.add(() => this.updateInput());
-    }
-
-    updateInput() {
-        if (Input.left) {
-            this.move(-1);
-        }
-        if (Input.right) {
-            this.move(1);
-        }
-    }
-
     get topCenter() {
         return new Point(this.x, this.y);
     }

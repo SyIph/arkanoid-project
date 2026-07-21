@@ -1,6 +1,8 @@
 import { Container, Graphics, Texture, Rectangle, Sprite, TilingSprite, Assets } from "pixi.js";
-import { LevelContainer } from "./level/levelContainer";
+import { LevelContainer } from "./level/levelScreen";
+import { LoadingScreen } from "./loadingScreen";
 import { GameState } from "./level/gameState";
+import { SaveManager } from "./core/saveManger";
 
 export class GameWindow extends Container {
     constructor(app, innerSize) {
@@ -18,15 +20,32 @@ export class GameWindow extends Container {
 
         const sizeWidth = Math.round(this.innerSize * 0.825);
 
-        this.gameInfo = { state: GameState.WAITING_PLAYER };
+        this.gameInfo = { 
+            state: GameState.LOADING_ROUND, 
+            round: 1,
+            score: 0,
+            highScore: SaveManager.loadHighScore()
+         };
+
         this.levelScreen = new LevelContainer(sizeWidth, this.innerSize, this.gameInfo);
         this.levelScreen.x = 2;
         this.addChild(this.levelScreen);
+
+        this.loadingScreen = new LoadingScreen(this.innerSize, this.gameInfo);
+        this.addChild(this.loadingScreen);
 
         this.initTicker(this.app.ticker);
     }
 
     initTicker(ticker) {
+        ticker.add(async () => {
+            if (this.gameInfo.state == GameState.LOADING_ROUND && !this.loadingScreen.visible) {
+                this.levelScreen.hide();
+                await this.loadingScreen.show(3);
+            } else if (this.gameInfo.state == GameState.WAITING_PLAYER && !this.levelScreen.visible) {
+                this.levelScreen.show();
+            }
+        });
         this.levelScreen.initTicker(ticker);
     }
 

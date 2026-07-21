@@ -1,9 +1,12 @@
 import { Container, Graphics } from "pixi.js";
 import { Ball}  from "../levelObjects/ball";
+import Input from "../core/input.js";
+import { GameState } from "../level/gameState.js";
 
 export class BallPhysics extends Container {
-    constructor(width, height, plate, brickGrid) {
+    constructor(width, height, plate, brickGrid, gameInfo) {
         super();
+        this.gameInfo = gameInfo;
         this.plate = plate;
         this.brickGrid = brickGrid;
         this.balls = [];
@@ -163,6 +166,17 @@ export class BallPhysics extends Container {
 
     initTicker(ticker) {
         ticker.add(() => {
+            if (this.gameInfo.state != GameState.PLAYING) {
+                return;
+            }
+            console.log('!');
+
+            if (Input.left) {
+                this.plate.move(-1);
+            }
+            if (Input.right) {
+                this.plate.move(1);
+            }
             for (const ball of this.balls) {
                 if (ball.sticked) {
                     ball.x = this.plate.x + ball.offsetX;

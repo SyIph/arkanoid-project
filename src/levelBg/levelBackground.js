@@ -3,11 +3,13 @@ import { BorderElement } from "./borderElement";
 import { AssetsIds } from "../core/gameAssets";
 
 export class LevelBackground extends Container {
-    constructor(width, height) {
+    constructor(width, height, backgroundTexture) {
         super();
 
         this._width = width;
         this._height = height;
+
+        this.backgroundTexture = backgroundTexture;
 
         const atlas = Assets.get(AssetsIds.BorderTexture);
 

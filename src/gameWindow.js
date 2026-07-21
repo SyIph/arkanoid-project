@@ -1,5 +1,6 @@
 import { Container, Graphics, Texture, Rectangle, Sprite, TilingSprite, Assets } from "pixi.js";
 import { LevelContainer } from "./level/levelContainer";
+import { AssetsIds } from "./core/gameAssets";
 
 export class GameWindow extends Container {
     constructor(app, innerSize) {
@@ -17,7 +18,7 @@ export class GameWindow extends Container {
 
         const size = Math.round(this.innerSize * 0.825);
 
-        this.levelContainer = new LevelContainer(size, this.innerSize);
+        this.levelContainer = new LevelContainer(size, this.innerSize, AssetsIds.Level1BgTexture, 1);
         this.levelContainer.x = 2;
         this.addChild(this.levelContainer);
 

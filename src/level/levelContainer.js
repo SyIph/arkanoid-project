@@ -4,15 +4,19 @@ import { PlayerPlate } from "../levelObjects/playerPlate";
 import { BallPhysics } from "../core/ballPhysics";
 import { Brick } from "../levelObjects/brick";
 import { BrickGrid } from "./brickGrid";
+import { ScoreBoard } from "./scoreBoard";
 
 export class LevelContainer extends Container {
-    constructor(width, height) {
+    constructor(width, height, backgroundTexture, levelNum = 1) {
         super();
 
         this._width = width;
         this._height = height;
 
-        this.levelBackground = new LevelBackground(width, height - 2);
+        this.backgroundTexture = backgroundTexture;
+        this.levelNum = levelNum;
+
+        this.levelBackground = new LevelBackground(width, height - 2, this.backgroundTexture);
         this.levelBackground.y = 2;
         this.addChild(this.levelBackground);
         const space = this.levelBackground.getInnerSpace();
@@ -23,12 +27,23 @@ export class LevelContainer extends Container {
         this.innerSpace = new BallPhysics(this.playerPlate, this.brickGrid);
         this.innerSpace.x = space.x;
         this.innerSpace.y = space.y;
-        const background = new Graphics().rect(0, 0, space.width, space.height).fill('#000000');
 
-        this.innerSpace.addChild(background);
+        const gameField = new TilingSprite({
+            texture: Assets.get(this.backgroundTexture),
+            width: space.width,
+            height: space.height
+        });
+        this.innerSpace.addChild(gameField);
+
         this.innerSpace.addChild(this.playerPlate);
         this.innerSpace.addChild(this.brickGrid);
         this.addChild(this.innerSpace);
+
+        this.scoreBoard = new ScoreBoard();
+        this.scoreBoard.x = this.levelBackground.width;
+        this.scoreBoard.y = 16;
+        this.scoreBoard.updatePos();
+        this.addChild(this.scoreBoard);
 
         this.addBall();
 
@@ -36,12 +51,12 @@ export class LevelContainer extends Container {
     }
 
     testLevelData() {
-        this.addBrickRow(Brick.GrayBrick, 4, true);
-        this.addBrickRow(Brick.RedBrick, 5);
-        this.addBrickRow(Brick.BlueBrick, 6);
-        this.addBrickRow(Brick.OrangeBrick, 7);
-        this.addBrickRow(Brick.PinkBrick, 8);
-        this.addBrickRow(Brick.GreenBrick, 9);
+        this.addBrickRow(Brick.GrayBrick, 4, true, this.levelNum);
+        this.addBrickRow(Brick.RedBrick, 5, false, this.levelNum);
+        this.addBrickRow(Brick.BlueBrick, 6, false, this.levelNum);
+        this.addBrickRow(Brick.OrangeBrick, 7, false, this.levelNum);
+        this.addBrickRow(Brick.PinkBrick, 8, false, this.levelNum);
+        this.addBrickRow(Brick.GreenBrick, 9, false, this.levelNum);
     }
 
     addBrick(brickFunc, x, y, armored = false, levelNum = 1) {

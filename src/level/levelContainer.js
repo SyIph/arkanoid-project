@@ -7,6 +7,7 @@ import { BrickGrid } from "./brickGrid";
 import { ScoreBoard } from "./scoreBoard";
 import { LifeBoard } from "./lifeBoard";
 import { AssetsIds } from "../core/gameAssets";
+import { SaveManager } from "../core/saveManger";
 
 export class LevelContainer extends Container {
     constructor(width, height) {
@@ -26,11 +27,16 @@ export class LevelContainer extends Container {
         this.scoreBoard.x = this.levelBackground.width;
         this.scoreBoard.y = 16;
         this.scoreBoard.init();
+        this.scoreBoard.highScore = SaveManager.loadHighScore();
         this.addChild(this.scoreBoard);
 
         this.brickGrid = new BrickGrid(space.width, space.height, 28, 11);
         this.brickGrid.setScoreCallback((score) => {
             this.scoreBoard.score += score;
+            if (this.scoreBoard.score > this.scoreBoard.highScore) {
+                this.scoreBoard.highScore = this.scoreBoard.score;
+                SaveManager.saveHighScore(this.scoreBoard.score);
+            }
         });
 
         this.innerSpace = new BallPhysics(space.width, space.height, this.playerPlate, this.brickGrid);

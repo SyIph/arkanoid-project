@@ -139,7 +139,7 @@ export class BallPhysics extends Container {
     }
 
     createBall(ballStart) {
-        const ball = new Ball(ballStart.x + 4, ballStart.y - 2);
+        const ball = new Ball(Math.round(ballStart.x) + 5, Math.round(ballStart.y) - 2);
         this.addChild(ball);
         this.balls.push(ball);
     }

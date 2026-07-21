@@ -59,9 +59,6 @@ export class ScoreBoard extends Container {
     set score(value) {
         this._score = value;
         this.playerValue.text = value.toString();
-        if (value > this.highScore) {
-            this.highScore = value;
-        }
     }
 
     get highScore() {

@@ -14,6 +14,10 @@ class Input {
         this.#keys[event.code] = false;
     }
 
+    get startLevel() {
+        return this.#keys['ArrowLeft'] || this.#keys['ArrowRight'] || this.#keys['Space'] || this.#keys['Enter']
+    }
+
     get left() {
         return this.#keys['ArrowLeft'] && !this.#keys['ArrowRight']
     }

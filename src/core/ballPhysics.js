@@ -1,5 +1,5 @@
 import { Container, Graphics } from "pixi.js";
-import { Ball } from "../levelObjects/ball";
+import { Ball}  from "../levelObjects/ball";
 
 export class BallPhysics extends Container {
     constructor(width, height, plate, brickGrid) {
@@ -138,15 +138,14 @@ export class BallPhysics extends Container {
         }
     }
 
-    createBall(ballStart) {
+    createBall(ballStart, sticked = false) {
         const ball = new Ball(Math.round(ballStart.x) + 5, Math.round(ballStart.y) - 2);
+        if (sticked) {
+            ball.stickToPlate(this.plate);
+        }
         this.addChild(ball);
         this.balls.push(ball);
     }
-
-    // createBrick(brick) {
-    //     this.bricks = [];
-    // }
 
     getBounds(elem) {
         return this.getBoundsAt(elem, elem.x, elem.y);
@@ -165,6 +164,12 @@ export class BallPhysics extends Container {
     initTicker(ticker) {
         ticker.add(() => {
             for (const ball of this.balls) {
+                if (ball.sticked) {
+                    ball.x = this.plate.x + ball.offsetX;
+                    ball.y = this.plate.y + ball.offsetY;
+                    continue;
+                }
+
                 const nextPosition = {
                     x: ball.x + ball.velocity.x,
                     y: ball.y + ball.velocity.y

@@ -13,7 +13,7 @@ export class Ball extends Sprite {
         this.offsetX = 0;
         this.offsetY = 0;
 
-        this.velocity = {x: 1, y: -1};
+        this.velocity = {x: 2, y: -2};
 
         this.setPosition(x, y);
     }

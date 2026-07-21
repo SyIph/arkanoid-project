@@ -30,7 +30,7 @@ export class Brick extends Container {
             Assets.get(AssetsIds.ArmorBrick6Texture),
             Assets.get(AssetsIds.ArmorBrick1Texture)
         ] : [ Texture.EMPTY ]);
-        this.armor.animationSpeed = 0.1;
+        this.armor.animationSpeed = 0.15;
         this.armor.loop = false;
         this.addChild(this.armor);
     }

@@ -164,41 +164,36 @@ export class BallPhysics extends Container {
         return { left, right: left + elem.width, top, bottom: top + elem.height }
     }
 
-    initTicker(ticker) {
-        ticker.add(() => {
-            if (this.gameInfo.state != GameState.PLAYING) {
-                return;
-            }
-            console.log('!');
+    tick(deltaTime) {
+        if (Input.left) {
+            this.plate.move(-1, deltaTime);
+        }
+        if (Input.right) {
+            this.plate.move(1, deltaTime);
+        }
 
-            if (Input.left) {
-                this.plate.move(-1);
+        for (const ball of this.balls) {
+            if (ball.sticked) {
+                ball.x = this.plate.x + ball.offsetX;
+                ball.y = this.plate.y + ball.offsetY;
+                continue;
             }
-            if (Input.right) {
-                this.plate.move(1);
-            }
-            for (const ball of this.balls) {
-                if (ball.sticked) {
-                    ball.x = this.plate.x + ball.offsetX;
-                    ball.y = this.plate.y + ball.offsetY;
-                    continue;
-                }
 
-                const nextPosition = {
-                    x: ball.x + ball.velocity.x,
-                    y: ball.y + ball.velocity.y
-                };
+            const nextPosition = {
+                x: ball.x + ball.velocity.x * deltaTime,
+                y: ball.y + ball.velocity.y * deltaTime
+            };
 
-                this.checkWalls(ball, nextPosition);
-                this.checkPlate(ball, nextPosition);
-                this.checkBricks(ball, nextPosition);
+            this.checkWalls(ball, nextPosition);
+            this.checkPlate(ball, nextPosition);
+            this.checkBricks(ball, nextPosition);
 
-                ball.setPosition(nextPosition.x, nextPosition.y);
-            }
-            for (const ball of this.ballToRemove) {
-                this.removeBall(ball);
-            }
-            this.ballToRemove.length = 0;
-        });
+            ball.setPosition(nextPosition.x, nextPosition.y);
+        }
+        for (const ball of this.ballToRemove) {
+            this.removeBall(ball);
+        }
+        this.ballToRemove.length = 0;
     }
+
 }

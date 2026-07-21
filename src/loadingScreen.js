@@ -9,12 +9,12 @@ export class LoadingScreen extends Container {
         this.gameInfo = gameInfo;
         this._width = size;
         this._height = size;
+        this.subContainer = new Container();
         this.background = new Graphics().rect(0, 0, this._width, this._height).fill('#000000');
         this.addChild(this.background);
         this.scoreBoard = new ScoreBoard(true);
         this.scoreBoard.init(this._width, this._height);
-        this.addChild(this.scoreBoard);
-
+        this.subContainer.addChild(this.scoreBoard);
         this.infoTitle = new Text({
             text: "",
             style: TextStyles.LargeInfo
@@ -22,25 +22,48 @@ export class LoadingScreen extends Container {
         this.infoTitle.anchor.set(0.5);
         this.infoTitle.x = this._width / 2;
         this.infoTitle.y = this._height / 2;
-        this.addChild(this.infoTitle);
+        this.subContainer.addChild(this.infoTitle);
+        this.addChild(this.subContainer);
         this.round = round;
-        this.visible = false;
+        this.hide();
     }
 
-    show(seconds) {
+    show() {
         this.visible = true;
         this.scoreBoard.highScore = this.gameInfo.highScore;
         this.scoreBoard.score = this.gameInfo.score;
+        let time = 3;
+        if (this.gameInfo.isNewGame) {
+            this.infoTitle.style = TextStyles.LargeInfo2;
+            this.infoTitle.text = 'THE ERA AND TIME OF\nTHIS STORY IS UNKNOWN.\n\n'+
+            'AFTER THE MOTHER SHIP\n\"ARKANOID\" WAS DESTROYED,\nA SPACECRAFT \"VAUS\"\n'+
+            'SCRAMBLED AWAY FROM IT.\n\nBUT ONLY TO BE\nTRAPPED IN SPACE WAR\nBY SOMEONE......';
+            time = 6;
+            this.subContainer.y = this._height;
+        } else {
+            this.infoTitle.style = TextStyles.LargeInfo;
+        }
         return new Promise(resolve => {
             setTimeout(() => {
                 this.hide();
                 this.gameInfo.state = GameState.WAITING_PLAYER;
-            }, seconds * 1000);
+                this.round = this._round;
+            }, time * 1000);
         });
     }
 
     hide() {
         this.visible = false;
+    }
+
+    tick(deltaTime) {
+        if (this.visible && this.gameInfo.isNewGame) {
+            if (this.subContainer.y > 0) {
+                this.subContainer.y -= 1 * deltaTime;
+            } else {
+                this.subContainer.y = 0;
+            }
+        }
     }
 
     get round() {

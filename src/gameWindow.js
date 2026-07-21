@@ -1,8 +1,10 @@
 import { Container, Graphics, Texture, Rectangle, Sprite, TilingSprite, Assets } from "pixi.js";
-import { LevelContainer } from "./level/levelScreen";
+import { LevelScreen } from "./level/levelScreen";
 import { LoadingScreen } from "./loadingScreen";
+import { PauseScreen } from "./pauseScreen";
 import { GameState } from "./level/gameState";
 import { SaveManager } from "./core/saveManger";
+import Input from "./core/input.js";
 
 export class GameWindow extends Container {
     constructor(app, innerSize) {
@@ -21,32 +23,49 @@ export class GameWindow extends Container {
         const sizeWidth = Math.round(this.innerSize * 0.825);
 
         this.gameInfo = { 
-            state: GameState.LOADING_ROUND, 
+            state: GameState.PAUSED,
             round: 1,
             score: 0,
-            highScore: SaveManager.loadHighScore()
-         };
+            highScore: SaveManager.loadHighScore(),
+            isNewGame: true
+        };
 
-        this.levelScreen = new LevelContainer(sizeWidth, this.innerSize, this.gameInfo);
+        this.levelScreen = new LevelScreen(sizeWidth, this.innerSize, this.gameInfo);
         this.levelScreen.x = 2;
         this.addChild(this.levelScreen);
 
         this.loadingScreen = new LoadingScreen(this.innerSize, this.gameInfo);
         this.addChild(this.loadingScreen);
 
+        this.pauseScreen = new PauseScreen(this.innerSize, this.gameInfo);
+        this.addChild(this.pauseScreen);
+
         this.initTicker(this.app.ticker);
+
+        this.maskRect = new Graphics().rect(0, 0, this.innerSize, this.innerSize).fill('#000000');
+        this.mask = this.maskRect;
+        this.addChild(this.maskRect);
     }
 
     initTicker(ticker) {
-        ticker.add(async () => {
-            if (this.gameInfo.state == GameState.LOADING_ROUND && !this.loadingScreen.visible) {
+        ticker.add(async (ticker) => {
+            const deltaTime = ticker.deltaTime;
+            if (this.gameInfo.state == GameState.PAUSED && !this.pauseScreen.visible) {
                 this.levelScreen.hide();
+                this.pauseScreen.show();
+            } else if (this.gameInfo.state == GameState.LOADING_ROUND && !this.loadingScreen.visible) {
+                this.levelScreen.hide();
+                this.pauseScreen.hide();
                 await this.loadingScreen.show(3);
             } else if (this.gameInfo.state == GameState.WAITING_PLAYER && !this.levelScreen.visible) {
+                this.pauseScreen.hide();
                 this.levelScreen.show();
             }
+            this.levelScreen.tick(deltaTime);
+            this.loadingScreen.tick(deltaTime);
+            this.pauseScreen.tick(deltaTime);
+            Input.tick();
         });
-        this.levelScreen.initTicker(ticker);
     }
 
     setMarginPercent(value) {

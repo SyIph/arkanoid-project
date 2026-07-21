@@ -11,7 +11,7 @@ import { SaveManager } from "../core/saveManger.js";
 import Input from "../core/input.js";
 import { GameState } from "./gameState.js";
 
-export class LevelContainer extends Container {
+export class LevelScreen extends Container {
     constructor(width, height, gameInfo) {
         super();
 
@@ -64,10 +64,13 @@ export class LevelContainer extends Container {
         this.lifeBoard = new LifeBoard(4, 4);
         this.lifeBoard.x = this.levelBackground.width + 1;
         this.lifeBoard.y = (this.height - this.lifeBoard.height) / 2;
-        this.lifeBoard.lifeCount = 3;
+        this.resetLife();
         this.addChild(this.lifeBoard);
 
         this.playerPlate.setBreakCallback(() => {
+            if (this.gameInfo.state != GameState.PLAYING) {
+                return;
+            }
             if (this.lifeBoard.lifeCount > 0) {
                 this.lifeBoard.lifeCount--;
                 this.gameInfo.state = GameState.LOADING_ROUND;
@@ -103,6 +106,10 @@ export class LevelContainer extends Container {
             return true;
         }
         return false;
+    }
+
+    resetLife() {
+        this.lifeBoard.lifeCount = 3;
     }
 
     removeAllBricks() {
@@ -146,19 +153,30 @@ export class LevelContainer extends Container {
     show() {
         this.visible = true;
         this.setInfoTitle('PLAYER 1\n  READY');
+        this.innerSpace.removeAllBalls();
+        this.playerPlate.visible = false;
+        if (this.gameInfo.isNewGame) {
+            this.initLevel(1);
+            this.gameInfo.isNewGame = false;
+            this.resetLife();
+            this.scoreBoard.score = this.gameInfo.score;
+            this.scoreBoard.highScore = this.gameInfo.highScore;
+        }
     }
 
     hide() {
         this.visible = false;
     }
 
-    initTicker(ticker) {
-        ticker.add(() => {
-            if (this.gameInfo.state == GameState.WAITING_PLAYER && Input.startLevel) {
-                this.startPlay();
-            }
-        });
-        this.innerSpace.initTicker(ticker);
+    tick(deltaTime) {
+        if (Input.consumeEscape() && (this.gameInfo.state == GameState.WAITING_PLAYER || this.gameInfo.state == GameState.PLAYING)) {
+            this.gameInfo.state = GameState.PAUSED;
+        } else if (this.gameInfo.state == GameState.WAITING_PLAYER && Input.startLevel) {
+            this.startPlay();
+        }
+        if (this.gameInfo.state == GameState.PLAYING) {
+            this.innerSpace.tick(deltaTime);
+        }
     }
 
     setInfoTitle(text) {

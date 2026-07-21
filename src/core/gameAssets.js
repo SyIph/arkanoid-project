@@ -14,8 +14,12 @@ export const AssetsIds = Object.freeze({
     ArmorBrick4Texture: "/assets/ArmorBrick4.png",
     ArmorBrick5Texture: "/assets/ArmorBrick5.png",
     ArmorBrick6Texture: "/assets/ArmorBrick6.png",
-    Level1BgTexture: "/assets/LevelBg1.png",
-    LifeTexture: "/assets/Life.png"
+    Level1BgTexture: "/assets/Level1Bg.png",
+    Level2BgTexture: "/assets/Level2Bg.png",
+    Level3BgTexture: "/assets/Level3Bg.png",
+    Level4BgTexture: "/assets/Level4Bg.png",
+    LifeTexture: "/assets/Life.png",
+    ArkanoidLogo: "/assets/ArkanoidLogo.png"
 });
 
 export const TextStyles = Object.freeze({
@@ -35,6 +39,12 @@ export const TextStyles = Object.freeze({
             fill: '#ffffff',
             fontFamily: "Arial",
             fontSize: 16,
+            fontWeight: "bold"
+        }),
+    LargeInfo2: new TextStyle({
+            fill: '#ffffff',
+            fontFamily: "Arial",
+            fontSize: 14,
             fontWeight: "bold"
         })
 });

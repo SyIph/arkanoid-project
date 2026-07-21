@@ -26,13 +26,14 @@ export class PlayerPlate extends AnimatedSprite {
 
         this.windowSizeX = windowSizeX;
         this.windowSizeY = windowSizeY;
-        this.speed = 2.0;
+        this.speed = 4.0;
 
         this.reset();
         this.y = this.windowSizeY - 16;
     }
 
     reset() {
+        this.visible = true;
         this.setState('base');
         this.animationSpeed = 0.0;
         this.anchor.set(0.5, 0);
@@ -40,6 +41,7 @@ export class PlayerPlate extends AnimatedSprite {
     }
 
     playBreak() {
+        this.visible = true;
         this.setState('break');
         this.animationSpeed = 0.1;
         this.anchor.set(0.5);
@@ -59,10 +61,10 @@ export class PlayerPlate extends AnimatedSprite {
         return new Point(this.x, this.y);
     }
 
-    move(dir) {
+    move(dir, deltaTime) {
         if (this.state == 'break')
             return;
-        this.x += dir * this.speed;
+        this.x += dir * this.speed * deltaTime;
         this.x = Math.min(Math.max(this.width / 2, this.x), this.windowSizeX - this.width / 2);
     }
 

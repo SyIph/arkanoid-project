@@ -31,7 +31,6 @@ export class LifeBoard extends Container {
     }
 
     set lifeCount(value) {
-        console.log(value);
         this.removeChildren().forEach(child => child.destroy());
         this._lifeCount = value;
         if (this._lifeCount <= 0) {

@@ -66,7 +66,7 @@ export class LevelContainer extends Container {
         this.playerPlate.setBreakCallback(() => {
             if (this.lifeBoard.lifeCount > 0) {
                 this.lifeBoard.lifeCount--;
-                this.initLevel(this.currentLevel);
+                this.resetPlateAndBall();
             } else {
                 this.setInfoTitle('GAME OVER');
             }

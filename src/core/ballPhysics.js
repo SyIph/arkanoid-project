@@ -13,27 +13,27 @@ export class BallPhysics extends Container {
         this.addChild(bounds);
     }
 
-    checkWalls(ball, newBallX, newBallY) {
+    checkWalls(ball, nextPosition) {
         const innerWidth = this.width;
         const innerHeight = this.height;
 
         const halfWidth = ball.width / 2;
         const halfHeight = ball.height / 2;
 
-        const ballBounds = this.getBoundsAt(ball, newBallX, newBallY);
+        const ballBounds = this.getBoundsAt(ball, nextPosition.x, nextPosition.y);
 
         if (ballBounds.left <= 0 && ball.velocity.x < 0) {
-            newBallX = halfWidth;
+            nextPosition.x = halfWidth;
             ball.velocity.x *= -1;
         }
 
         if (ballBounds.right >= innerWidth && ball.velocity.x > 0) {
-            newBallX = innerWidth - halfWidth;
+            nextPosition.x = innerWidth - halfWidth;
             ball.velocity.x *= -1;
         }
 
         if (ballBounds.top <= 0 && ball.velocity.y < 0) {
-            newBallY = halfHeight;
+            nextPosition.y = halfHeight;
             ball.velocity.y *= -1;
         }
 
@@ -42,14 +42,14 @@ export class BallPhysics extends Container {
         }
     }
 
-    checkPlate(ball, newBallX, newBallY) {
+    checkPlate(ball, nextPosition) {
         const plateBounds = this.getBounds(this.plate);
 
         if (ball.velocity.y <= 0) {
             return;
         }
 
-        const ballBounds = this.getBounds(ball);
+        const ballBounds = this.getBoundsAt(ball, nextPosition.x, nextPosition.y);
 
         if (ballBounds.bottom < plateBounds.top) {
             return;
@@ -59,23 +59,23 @@ export class BallPhysics extends Container {
             return;
         }
 
-        ball.y = plateBounds.top - ball.height / 2;
+        nextPosition.y = plateBounds.top - ball.height / 2;
 
         ball.velocity.y = -Math.abs(ball.velocity.y);
 
-        if (ball.x < this.plate.x) {
+        if (nextPosition.x < this.plate.x) {
             ball.velocity.x = -Math.abs(ball.velocity.x);
         } else {
             ball.velocity.x = Math.abs(ball.velocity.x);
         }
     }
 
-    checkBricks(ball, newBallX, newBallY) {
-        const ballBounds = this.getBounds(ball);
+    checkBricks(ball, nextPosition) {
+        const ballBounds = this.getBoundsAt(ball, nextPosition.x, nextPosition.y);
 
         const bricks = this.brickGrid.getBricksNear(ballBounds);
 
-        for (const brick of this.brickGrid.bricks) {
+        for (const brick of bricks) {
             const brickBounds = this.getBounds(brick);
 
             if (ballBounds.right < brickBounds.left || ballBounds.left > brickBounds.right ||
@@ -99,26 +99,24 @@ export class BallPhysics extends Container {
 
             if (collisionHorizontal < collisionVertical) {// Столкновение произошло по горизонтали
                 if (ball.velocity.x > 0) {
-                    newBallX = ball.x - collisionHorizontal;
+                    nextPosition.x -= collisionHorizontal;
                 } else {
-                    newBallX = ball.x + collisionHorizontal;
+                    nextPosition.x += collisionHorizontal;
                 }
                 ball.velocity.x *= -1;
             } else { // Столкновение произошло по вертикали
                 if (ball.velocity.y > 0) {
-                    newBallY = ball.y - collisionVertical;
+                    nextPosition.y -= collisionVertical;
                 } else {
-                    newBallY = ball.y + collisionVertical;
+                    nextPosition.y += collisionVertical;
                 }
                 ball.velocity.y *= -1;
             }
 
             this.brickGrid.hitBrick(brick);
 
-            return true;
+            return;
         }
-
-        return false;
     }
 
     removeAllBalls() {
@@ -146,9 +144,9 @@ export class BallPhysics extends Container {
         this.balls.push(ball);
     }
 
-    createBrick(brick) {
-        this.bricks = [];
-    }
+    // createBrick(brick) {
+    //     this.bricks = [];
+    // }
 
     getBounds(elem) {
         return this.getBoundsAt(elem, elem.x, elem.y);
@@ -167,16 +165,16 @@ export class BallPhysics extends Container {
     initTicker(ticker) {
         ticker.add(() => {
             for (const ball of this.balls) {
-                const newBallX = ball.x + ball.velocity.x;
-                const newBallY = ball.y + ball.velocity.y;
+                const nextPosition = {
+                    x: ball.x + ball.velocity.x,
+                    y: ball.y + ball.velocity.y
+                };
 
-                this.checkWalls(ball, newBallX, newBallY);
-                this.checkPlate(ball, newBallX, newBallY);
-                if (this.checkBricks(ball, newBallX, newBallY)) {
-                    break;
-                }
+                this.checkWalls(ball, nextPosition);
+                this.checkPlate(ball, nextPosition);
+                this.checkBricks(ball, nextPosition);
 
-                ball.setPosition(newBallX, newBallY);
+                ball.setPosition(nextPosition.x, nextPosition.y);
             }
             for (const ball of this.ballToRemove) {
                 this.removeBall(ball);

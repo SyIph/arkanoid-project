@@ -5,17 +5,15 @@ import { BallPhysics } from "../core/ballPhysics";
 import { Brick } from "../levelObjects/brick";
 import { BrickGrid } from "./brickGrid";
 import { ScoreBoard } from "./scoreBoard";
-import { LifeBoard } from "./lifeBorard";
+import { LifeBoard } from "./lifeBoard";
+import { AssetsIds } from "../core/gameAssets";
 
 export class LevelContainer extends Container {
-    constructor(width, height, backgroundTexture, levelNum = 1) {
+    constructor(width, height) {
         super();
 
         this._width = width;
         this._height = height;
-
-        this.backgroundTexture = backgroundTexture;
-        this.levelNum = levelNum;
 
         this.levelBackground = new LevelBackground(width, height - 2, this.backgroundTexture);
         this.levelBackground.y = 2;
@@ -59,32 +57,51 @@ export class LevelContainer extends Container {
         this.infoTitle.y = space.height * 0.84;
         this.addChild(this.infoTitle);
 
-        this.addBall();
-
         this.lifeBoard = new LifeBoard(4, 4);
         this.lifeBoard.x = this.levelBackground.width + 1;
         this.lifeBoard.y = (this.height - this.lifeBoard.height) / 2;
-        this.lifeBoard.lifeCount = 6;
+        this.lifeBoard.lifeCount = 3;
         this.addChild(this.lifeBoard);
 
         this.playerPlate.setBreakCallback(() => {
             if (this.lifeBoard.lifeCount > 0) {
-                
+                this.lifeBoard.lifeCount--;
+                this.initLevel(this.currentLevel);
             } else {
                 this.setInfoTitle('GAME OVER');
             }
         });
 
-        this.testLevelData();
+        this.initLevel(1);
     }
 
-    testLevelData() {
-        this.addBrickRow(Brick.GrayBrick, 4, true, this.levelNum);
-        this.addBrickRow(Brick.RedBrick, 5, false, this.levelNum);
-        this.addBrickRow(Brick.BlueBrick, 6, false, this.levelNum);
-        this.addBrickRow(Brick.OrangeBrick, 7, false, this.levelNum);
-        this.addBrickRow(Brick.PinkBrick, 8, false, this.levelNum);
-        this.addBrickRow(Brick.GreenBrick, 9, false, this.levelNum);
+    initLevel(levelNum) {
+        this.removeAllBricks();
+        this.resetPlateAndBall();
+        this.currentLevel = levelNum;
+        if (levelNum == 1) {
+            this.setBackground(AssetsIds.Level1BgTexture);
+            this.addBrickRow(Brick.GrayBrick, 4, true, this.levelNum);
+            this.addBrickRow(Brick.RedBrick, 5, false, this.levelNum);
+            this.addBrickRow(Brick.BlueBrick, 6, false, this.levelNum);
+            this.addBrickRow(Brick.OrangeBrick, 7, false, this.levelNum);
+            this.addBrickRow(Brick.PinkBrick, 8, false, this.levelNum);
+            this.addBrickRow(Brick.GreenBrick, 9, false, this.levelNum);
+        }
+    }
+
+    removeAllBricks() {
+        this.brickGrid.removeAllBricks();
+    }
+
+    setBackground(texture) {
+        this.levelBackground.setBackgroundTexture(texture);
+    }
+
+    resetPlateAndBall() {
+        this.playerPlate.reset();
+        this.innerSpace.removeAllBalls();
+        this.addBall();
     }
 
     addBrick(brickFunc, x, y, armored = false, levelNum = 1) {

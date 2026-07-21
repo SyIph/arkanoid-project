@@ -31,10 +31,12 @@ export class LifeBoard extends Container {
     }
 
     set lifeCount(value) {
+        console.log(value);
         this.removeChildren().forEach(child => child.destroy());
         this._lifeCount = value;
-        if (this._lifeCount < 0) {
+        if (this._lifeCount <= 0) {
             this._lifeCount = 0;
+            return;
         }
         if (this._lifeCount > this.rows * this.columns) {
             this._lifeCount = this.rows * this.columns;

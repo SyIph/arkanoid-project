@@ -3,13 +3,11 @@ import { BorderElement } from "./borderElement";
 import { AssetsIds } from "../core/gameAssets";
 
 export class LevelBackground extends Container {
-    constructor(width, height, backgroundTexture) {
+    constructor(width, height) {
         super();
 
         this._width = width;
         this._height = height;
-
-        this.backgroundTexture = backgroundTexture;
 
         const atlas = Assets.get(AssetsIds.BorderTexture);
 
@@ -71,14 +69,14 @@ export class LevelBackground extends Container {
         this.borderHorizontalElement2.x = this._width / 4 * 3 - this.borderHorizontalElement2.width / 2;
 
         const space = this.getInnerSpace();
-        const background = new TilingSprite({
-            texture: Assets.get(this.backgroundTexture),
+        this.background = new TilingSprite({
+            texture: Texture.EMPTY,
             width: space.width,
             height: space.height
         });
-        background.x = space.x;
-        background.y = space.y - 1;
-        this.addChild(background);
+        this.background.x = space.x;
+        this.background.y = space.y - 1;
+        this.addChild(this.background);
 
         this.addChild(this.topLeftBorder);
         this.addChild(this.topRightBorder);
@@ -99,6 +97,10 @@ export class LevelBackground extends Container {
                 this.addChild(borderVerticalElement);
             }
         }
+    }
+
+    setBackgroundTexture(texture) {
+        this.background.texture = Assets.get(texture);
     }
 
     getInnerSpace() {

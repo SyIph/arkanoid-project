@@ -96,4 +96,12 @@ export class BrickGrid extends Container {
         }
     }
 
+    removeAllBricks() {
+        this.removeChildren().forEach(brick => brick.destroy());
+        this.bricks.length = 0;
+        for (const row of this.grid) {
+            row.fill(null);
+        }
+    }
+
 }

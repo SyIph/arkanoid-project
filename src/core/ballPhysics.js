@@ -121,6 +121,13 @@ export class BallPhysics extends Container {
         return false;
     }
 
+    removeAllBalls() {
+        for (const ball of this.balls) {
+            this.removeBall(ball);
+        }
+        this.balls.length = 0;
+    }
+
     removeBall(ball) {
         const index = this.balls.indexOf(ball);
         if (index !== -1) {

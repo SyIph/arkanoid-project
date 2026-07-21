@@ -20,18 +20,23 @@ export class PlayerPlate extends AnimatedSprite {
             ]
         }
 
-        this.setState('base');
-
         this.animationSpeed = 0.0;
-        this.loop = false;
         this.anchor.set(0.5, 0);
+        this.loop = false;
 
         this.windowSizeX = windowSizeX;
         this.windowSizeY = windowSizeY;
         this.speed = 2.0;
 
-        this.x = this.windowSizeX / 2;
+        this.reset();
         this.y = this.windowSizeY - 16;
+    }
+
+    reset() {
+        this.setState('base');
+        this.animationSpeed = 0.0;
+        this.anchor.set(0.5, 0);
+        this.x = this.windowSizeX / 2;
     }
 
     playBreak() {

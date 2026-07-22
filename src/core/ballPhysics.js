@@ -25,22 +25,22 @@ export class BallPhysics extends Container {
 
         const ballBounds = this.getBoundsAt(ball, nextPosition.x, nextPosition.y);
 
-        if (ballBounds.left <= 0 && ball.velocity.x < 0) {
+        if (ballBounds.left <= 0 && ball.velocityX < 0) {
             nextPosition.x = halfWidth;
-            ball.velocity.x *= -1;
+            ball.reflectVertical();
         }
 
-        if (ballBounds.right >= innerWidth && ball.velocity.x > 0) {
+        if (ballBounds.right >= innerWidth && ball.velocityX > 0) {
             nextPosition.x = innerWidth - halfWidth;
-            ball.velocity.x *= -1;
+            ball.reflectVertical();
         }
 
-        if (ballBounds.top <= 0 && ball.velocity.y < 0) {
+        if (ballBounds.top <= 0 && ball.velocityY < 0) {
             nextPosition.y = halfHeight;
-            ball.velocity.y *= -1;
+            ball.reflectHorizontal();
         }
 
-        if (ballBounds.bottom >= innerHeight && ball.velocity.y > 0) {
+        if (ballBounds.bottom >= innerHeight && ball.velocityY > 0) {
             this.ballToRemove.push(ball);
         }
     }
@@ -48,7 +48,7 @@ export class BallPhysics extends Container {
     checkPlate(ball, nextPosition) {
         const plateBounds = this.getBounds(this.plate);
 
-        if (ball.velocity.y <= 0) {
+        if (ball.velocityY <= 0) {
             return;
         }
 
@@ -64,13 +64,13 @@ export class BallPhysics extends Container {
 
         nextPosition.y = plateBounds.top - ball.height / 2;
 
-        ball.velocity.y = -Math.abs(ball.velocity.y);
+        const relativeHit = (nextPosition.x - this.plate.x) / (this.plate.width / 2); // от -1 до 1
 
-        if (nextPosition.x < this.plate.x) {
-            ball.velocity.x = -Math.abs(ball.velocity.x);
-        } else {
-            ball.velocity.x = Math.abs(ball.velocity.x);
-        }
+        const maxAngle = Math.PI * 55 / 180; // максимальный угол 55
+        let angle = relativeHit * maxAngle;
+        angle += (Math.random() - 0.5) * 0.03;
+
+        ball.angle = angle;
     }
 
     checkBricks(ball, nextPosition) {
@@ -88,32 +88,32 @@ export class BallPhysics extends Container {
 
             const NO_COLLISION = Infinity;
 
-            const ballFromLeft = ball.velocity.x > 0;
-            const ballFromRight = ball.velocity.x < 0;
+            const ballFromLeft = ball.velocityX > 0;
+            const ballFromRight = ball.velocityX < 0;
             const collisionLeft = ballFromLeft ? ballBounds.right - brickBounds.left : NO_COLLISION;
             const collisionRight = ballFromRight ? brickBounds.right - ballBounds.left : NO_COLLISION;
             const collisionHorizontal = Math.min(collisionLeft, collisionRight);// Какая меньше, к той стороне ближе
 
-            const ballFromTop = ball.velocity.y > 0;
-            const ballFromBottom = ball.velocity.y < 0;
+            const ballFromTop = ball.velocityY > 0;
+            const ballFromBottom = ball.velocityY < 0;
             const collisionTop = ballFromTop ? ballBounds.bottom - brickBounds.top : NO_COLLISION;
             const collisionBottom = ballFromBottom ? brickBounds.bottom - ballBounds.top : NO_COLLISION;
             const collisionVertical = Math.min(collisionTop, collisionBottom);// Какая меньше, к той стороне ближе
 
             if (collisionHorizontal < collisionVertical) {// Столкновение произошло по горизонтали
-                if (ball.velocity.x > 0) {
+                if (ball.velocityX > 0) {
                     nextPosition.x -= collisionHorizontal;
                 } else {
                     nextPosition.x += collisionHorizontal;
                 }
-                ball.velocity.x *= -1;
+                ball.reflectVertical();
             } else { // Столкновение произошло по вертикали
-                if (ball.velocity.y > 0) {
+                if (ball.velocityY > 0) {
                     nextPosition.y -= collisionVertical;
                 } else {
                     nextPosition.y += collisionVertical;
                 }
-                ball.velocity.y *= -1;
+                ball.reflectHorizontal();
             }
 
             this.brickGrid.hitBrick(brick);
@@ -180,8 +180,8 @@ export class BallPhysics extends Container {
             }
 
             const nextPosition = {
-                x: ball.x + ball.velocity.x * deltaTime,
-                y: ball.y + ball.velocity.y * deltaTime
+                x: ball.x + ball.velocityX * deltaTime,
+                y: ball.y + ball.velocityY * deltaTime
             };
 
             this.checkWalls(ball, nextPosition);

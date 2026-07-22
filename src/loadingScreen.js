@@ -42,12 +42,13 @@ export class LoadingScreen extends Container {
             this.subContainer.y = this._height;
         } else {
             this.infoTitle.style = TextStyles.LargeInfo;
+            this.round = this.gameInfo.round;
         }
         return new Promise(resolve => {
             setTimeout(() => {
                 this.hide();
                 this.gameInfo.state = GameState.WAITING_PLAYER;
-                this.round = this._round;
+                this.round = this.gameInfo.round;
             }, time * 1000);
         });
     }

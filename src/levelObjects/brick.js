@@ -3,12 +3,12 @@ import { AssetsIds } from "../core/gameAssets";
 
 export class Brick extends Container {
 
-    constructor(width, height, color, score, armored = false, indestructable = false) {
+    constructor(width, height, color, score, armored = false, indestructible = false) {
         super();
         this.color = color;
         this.score = score;
         this.armored = armored;
-        this.indestructable = indestructable;
+        this.indestructible = indestructible;
 
         this._width = width;
         this._height = height;
@@ -36,9 +36,11 @@ export class Brick extends Container {
     }
 
     hit() {
-        this.health--;
-        if (this.health <= 0) {
-            return true;
+        if (!this.indestructible) {
+            this.health--;
+            if (this.health <= 0) {
+                return true;
+            }
         }
         this.armor.gotoAndPlay(0);
         return false;
@@ -56,8 +58,8 @@ export class Brick extends Container {
         return new Brick(width, height, '#002eb7', 100, armored);
     }
 
-    static OrangeBrick(width, height, armored, levelNum) {
-        return new Brick(width, height, '#d09a35', 60, armored);
+    static YellowBrick(width, height, armored, levelNum) {
+        return new Brick(width, height, '#fc9838', 120, armored);
     }
 
     static PinkBrick(width, height, armored, levelNum) {
@@ -66,6 +68,22 @@ export class Brick extends Container {
 
     static GreenBrick(width, height, armored, levelNum) {
         return new Brick(width, height, '#aaff52', 80, armored);
+    }
+
+    static OrangeBrick(width, height, armored, levelNum) {
+        return new Brick(width, height, '#d09a35', 60, armored);
+    }
+
+    static LightBlueBrick(width, height, armored, levelNum) {
+        return new Brick(width, height, '#3cbcfc', 70, armored);
+    }
+
+    static WhiteBrick(width, height, armored, levelNum) {
+        return new Brick(width, height, '#f2f2f2', 50, armored);
+    }
+
+    static GoldBrick(width, height, armored, levelNum) {
+        return new Brick(width, height, '#f0bc3c', 0, true, true);
     }
 
 }

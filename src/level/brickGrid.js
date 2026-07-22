@@ -84,14 +84,18 @@ export class BrickGrid extends Container {
         this.bricks.push(brick);
     }
 
-    addBrickRow(brickFunc, y, armored = false, levelNum = 1) {
-        for (let x = 0; x < this.columns; x++) {
+    addBrickRow(brickFunc, y, armored = false, levelNum = 1, start = -1, length = Infinity) {
+        const startX = Math.max(start, 0);
+        const lenX = Math.min(startX + length, this.columns);
+        for (let x = startX; x < lenX; x++) {
             this.addBrick(brickFunc, x, y, armored, levelNum);
         }
     }
 
-    addBrickColumn(brickFunc, x, armored = false, levelNum = 1) {
-        for (let y = 0; y < this.rows; y++) {
+    addBrickColumn(brickFunc, x, armored = false, levelNum = 1, start = -1, length = Infinity) {
+        const startY = Math.max(start, 0);
+        const lenY = Math.min(startY + length, this.rows);
+        for (let y = startY; y < lenY; y++) {
             this.addBrick(brickFunc, x, y, armored, levelNum);
         }
     }

@@ -9,6 +9,13 @@ export class LevelBackground extends Container {
         this._width = width;
         this._height = height;
 
+        this.backgrounds = [
+            Assets.get(AssetsIds.Level1BgTexture),
+            Assets.get(AssetsIds.Level2BgTexture),
+            Assets.get(AssetsIds.Level3BgTexture),
+            Assets.get(AssetsIds.Level4BgTexture)
+        ];
+
         const atlas = Assets.get(AssetsIds.BorderTexture);
 
         const borderTopLeftTexture = new Texture({
@@ -99,8 +106,8 @@ export class LevelBackground extends Container {
         }
     }
 
-    setBackgroundTexture(texture) {
-        this.background.texture = Assets.get(texture);
+    setBackgroundByLevel(levelNum) {
+        this.background.texture = this.backgrounds[(levelNum - 1) % this.backgrounds.length];
     }
 
     getInnerSpace() {

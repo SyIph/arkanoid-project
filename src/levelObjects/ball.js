@@ -9,13 +9,30 @@ export class Ball extends Sprite {
         this.texture.source.scaleMode = 'nearest';
         this.anchor.set(0.5);
 
+        this.speed = 3.0;
+        this.angle = Math.PI / 4;
+
         this.sticked = false;
         this.offsetX = 0;
         this.offsetY = 0;
 
-        this.velocity = {x: 2, y: -2};
-
         this.setPosition(x, y);
+    }
+
+    get velocityX() {
+        return this.speed * Math.sin(this.angle);
+    }
+
+    get velocityY() {
+        return -this.speed * Math.cos(this.angle);
+    }
+
+    reflectVertical() {
+        this.angle *= -1;
+    }
+
+    reflectHorizontal() {
+        this.angle = Math.PI - this.angle;
     }
 
     stickToPlate(plate) {
